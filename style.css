@@ -1,0 +1,68 @@
+/*
+Theme Name: CUSBRO
+Theme URI: https://cusbro.pro
+Author: Михайло Ковальенко
+Author URI: https://cusbro.pro
+Description: Професійна WordPress тема для митного брокера CUSBRO.
+Version: 1.0.0
+Requires at least: 6.8
+Tested up to: 6.8
+Requires PHP: 8.2
+Text Domain: cusbro
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+*/
+
+:root{
+
+    --primary:#0C5ADB;
+    --secondary:#1A1A1A;
+    --white:#ffffff;
+    --gray:#F5F7FA;
+    --text:#3E4A59;
+
+    --container:1320px;
+
+    --radius:16px;
+
+    --transition:.25s ease;
+
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    font-family:Inter,Arial,sans-serif;
+
+    color:var(--text);
+
+    background:#fff;
+
+    line-height:1.6;
+
+}
+
+img{
+    max-width:100%;
+    display:block;
+}
+
+a{
+    text-decoration:none;
+}
+
+.container{
+
+    width:min(1320px,92%);
+    margin:auto;
+
+}
