@@ -10,6 +10,13 @@ if (!defined('ABSPATH')) {
 function cusbro_enqueue_assets(): void
 {
     wp_enqueue_style(
+        'cusbro-fonts',
+        'https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap',
+        [],
+        null
+    );
+
+    wp_enqueue_style(
         'cusbro-style',
         get_stylesheet_uri(),
         [],
@@ -19,7 +26,7 @@ function cusbro_enqueue_assets(): void
     wp_enqueue_style(
         'cusbro-main',
         CUSBRO_URI . '/assets/css/main.css',
-        ['cusbro-style'],
+        ['cusbro-style', 'cusbro-fonts'],
         CUSBRO_VERSION
     );
 
