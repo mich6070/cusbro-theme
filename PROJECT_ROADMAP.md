@@ -51,12 +51,30 @@ Per the No-jumping-back rule: Calculator doesn't get touched again
 without a critical bug, a conversion problem, an SEO problem, or a
 responsiveness problem.
 
-**Current Sprint:** Cases
-**Current Block:** Cases
-**Next Block:** Reviews
-**Current Goal:** Open Cases per the content-gating rule below — start
-with UX/business logic, no code, per the same process used for every
-prior block
+**Cases: Built ✅ QA ✅ Narrative ✅ Release 🔒 — CLOSED (Phase 1)**
+
+Closed on a real Visual QA pass across Desktop/Laptop/Tablet/Mobile —
+equal card heights, hover, SVG badge alignment, no horizontal scroll.
+Found and fixed a real cross-section bug along the way: `.about-grid`
+grid items were missing `min-width: 0` (classic grid/flex "won't
+shrink below content" trap), and `overflow-x: hidden` was only on
+`body`, not `html` — together these let About's overflow drag the
+whole page into a horizontally-scrolled state, which is what made
+unrelated sections (Process) look broken in the same screenshots.
+Release stays 🔒 — code/design is done, only the demo cases need
+swapping for real client data (content-only change, per the
+content-gating rule below).
+
+Per the No-jumping-back rule: Cases doesn't get touched again without
+a critical bug, a conversion problem, an SEO problem, or a
+responsiveness problem.
+
+**Current Sprint:** Reviews
+**Current Block:** Reviews
+**Next Block:** FAQ
+**Current Goal:** Open Reviews — same process as every prior block:
+UX/business logic first, no code, then text, wireframe, HTML, CSS,
+QA, Narrative, Release.
 
 ## Definition of Done
 
@@ -169,7 +187,7 @@ just means "not reached yet."
 | Advantages | ✅ | ✅ *(same caveat as Services — DOM-confirmed, patterns-confirmed, not independently screenshotted)* | ✅ | ✅ no CTA of its own — nothing to break |
 | Process | ✅ *(4-step stepper, "Ваша роль/Наша робота" split, CTA bridges to Calculator)* | ✅ live screenshots at 1920/1440/1366/1024/768/420px — desktop connecting line, 2×2 tablet (line correctly hidden), mobile vertical rail all confirmed rendering correctly, incl. the `top`/`bottom` fix actually spanning to the next circle | ✅ step 4 echoes Hero's promise, CTA reads clearly in every screenshot | ✅ CTA points at `#calculator`, which already exists and works |
 | Calculator (auto) | ✅ *(rebuilt on `feature/calculator-refactor`: 9 fields incl. condition, registration date, truck/bus excise as weight×age matrix, live NBU rates, multi-currency display, separate pension line — dead PHP engine deleted from Git **and** Local Sites)* | ✅ Technical QA (DOM/IDs/no warnings) + extensive live Visual QA — real screenshots across breakpoints, real reference-tool cross-checks (mdoffice.com.ua) confirming duty/excise/VAT to the cent, multiple confirmed bugs found and fixed — see "Calculator — Visual QA findings" | ✅ delivers on Hero's payments-upfront promise, bridges cleanly into `#contact` | ✅ CTA target confirmed working (`#contact`); Hero + Process CTAs reworded from generic "Розрахувати митні платежі" to be honest about vehicle-only scope |
-| Cases | ⬜ | ⬜ | ⬜ | ⬜ |
+| Cases | ✅ *(HTML+CSS, Phase 1 content-gating: 6 demo cases — 3 legkovi/truck/bus/moto — badge+icon system reusing Services SVGs, no new colors per Architecture Rules)* | ✅ Technical QA + real Visual QA (Desktop/Laptop/Tablet/Mobile, equal card heights, hover, SVG alignment, no horizontal scroll — including a real cross-section bug found and fixed: `.about-grid` grid items missing `min-width:0`, `overflow-x:hidden` missing on `html`) | ✅ Calculator → Cases → CTA reads as one continuous story | 🔒 intentionally blocked — demo cases only, waiting on real client data per the content-gating rule |
 | Reviews | ⬜ | ⬜ | ⬜ | ⬜ |
 | FAQ | ⬜ | ⬜ | ⬜ | ⬜ |
 | CTA | ⬜ *(emergency-patched only — see below; still old visual style, no brand pass yet)* | ⬜ | ⬜ *(not evaluated — this isn't its real build turn yet)* | ✅ real phone + working Telegram/Viber/WhatsApp, no dead form |
@@ -493,7 +511,7 @@ Phase 2 is a content-only swap, never both at once.
 - v0.4 — Advantages ✅
 - v0.5 — Process ✅
 - v0.6 — Calculator ✅
-- v0.7 — Cases
+- v0.7 — Cases 🔒 *(built + QA'd, Release blocked on real case data)*
 - v0.8 — Reviews
 - v0.9 — FAQ
 - v0.95 — CTA + Footer
