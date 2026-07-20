@@ -1,442 +1,384 @@
-.calculator{
+/* ============================================================
+   Calculator — CUSBRO
+   ============================================================ */
+.calculator {
+    --calculator-primary: #0D3B66;
+    --calculator-accent: #F58220;
+    --calculator-accent-dark: #DD6F10;
+    --calculator-light: #F7F8FA;
+    --calculator-border: #E6EAF0;
+    --calculator-text: #1A1A1A;
+    --calculator-muted: #5B6472;
+    --calculator-radius: 14px;
+    --calculator-radius-lg: 22px;
 
-padding:110px 0;
-
-background:#F7FAFF;
-
+    background: var(--calculator-light);
+    padding-block: 120px;
 }
 
-.calculator-wrapper{
-
-display:grid;
-
-grid-template-columns:3fr 2fr;
-
-gap:50px;
-
-margin-top:60px;
-
-align-items:start;
-
+.calculator .container {
+    width: min(1320px, 92%);
+    margin-inline: auto;
 }
 
-.calculator-form{
-
-background:#fff;
-
-padding:40px;
-
-border-radius:20px;
-
-box-shadow:0 20px 50px rgba(0,0,0,.08);
-
+/* ── Header ────────────────────────────────────────────── */
+.calculator__header {
+    max-width: 620px;
+    margin-bottom: 56px;
 }
 
-.calculator-form .form-grid{
-
-display:grid;
-
-grid-template-columns:repeat(2,1fr);
-
-gap:25px;
-
-margin-bottom:35px;
-
+.calculator__title {
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    color: var(--calculator-text);
+    margin-bottom: 12px;
 }
 
-.calculator-form .form-group{
-
-display:flex;
-
-flex-direction:column;
-
+.calculator__subtitle {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--calculator-muted);
 }
 
-.calculator-form .form-group label{
-
-margin-bottom:10px;
-
-font-weight:600;
-
-color:#242424;
-
+/* ── Grid ──────────────────────────────────────────────── */
+.calculator__grid {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 32px;
+    align-items: start;
 }
 
-.calculator-form .form-group input,
-.calculator-form .form-group select{
-
-height:55px;
-
-padding:0 18px;
-
-border:1px solid #d8d8d8;
-
-border-radius:10px;
-
-font-size:16px;
-
-transition:.3s;
-
+/* ── Form ──────────────────────────────────────────────── */
+.calculator__form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 16px;
+    background: #FFFFFF;
+    border: 1px solid var(--calculator-border);
+    border-radius: var(--calculator-radius-lg);
+    padding: 32px;
 }
 
-.calculator-form .form-group input:focus,
-.calculator-form .form-group select:focus{
-
-outline:none;
-
-border-color:#0C5ADB;
-
-box-shadow:0 0 0 4px rgba(12,90,219,.12);
-
+.calculator__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.calculator-result{
-
-background:#0C5ADB;
-
-color:#fff;
-
-padding:40px;
-
-border-radius:20px;
-
-position:sticky;
-
-top:120px;
-
+/* the [hidden] attribute is only inert until an author style sets its
+   own `display` on the same element — `.calculator__field`'s
+   `display: flex` above wins over the browser's default
+   `[hidden] { display: none }` UA rule, which is exactly why the truck
+   weight field was showing for every vehicle type instead of just
+   trucks. Needs restating explicitly, with enough specificity to win. */
+.calculator__field[hidden] {
+    display: none;
 }
 
-.calculator-result h3{
-
-margin-bottom:30px;
-
-font-size:28px;
-
+.calculator__field--wide {
+    grid-column: 1 / -1;
 }
 
-.result-item{
-
-display:flex;
-
-justify-content:space-between;
-
-padding:15px 0;
-
-border-bottom:1px solid rgba(255,255,255,.15);
-
+.calculator__field label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--calculator-text);
 }
 
-.result-total{
-
-display:flex;
-
-justify-content:space-between;
-
-margin-top:30px;
-
-padding-top:30px;
-
-border-top:2px solid rgba(255,255,255,.3);
-
-font-size:24px;
-
-font-weight:700;
-
+.calculator__field input,
+.calculator__field select {
+    height: 52px;
+    padding: 0 16px;
+    border: 1.5px solid var(--calculator-border);
+    border-radius: var(--calculator-radius);
+    background: #FFFFFF;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--calculator-text);
+    transition: border-color .2s ease, box-shadow .2s ease;
 }
 
-.calculator-actions{
-
-display:flex;
-
-flex-wrap:wrap;
-
-gap:15px;
-
-margin-top:30px;
-
-padding-top:25px;
-
-border-top:1px solid rgba(255,255,255,.2);
-
+.calculator__field input:focus,
+.calculator__field select:focus {
+    outline: none;
+    border-color: var(--calculator-primary);
+    box-shadow: 0 0 0 3px rgba(13, 59, 102, .12);
 }
 
-.calculator-result .btn--hero-outline{
-
-border-color:#fff;
-
-color:#fff;
-
+.calculator__price-row {
+    display: flex;
+    gap: 8px;
 }
 
-.calculator-result .btn--hero-outline:hover{
-
-background:#fff;
-
-color:#0C5ADB;
-
+.calculator__price-row input {
+    flex: 1;
+    min-width: 0;
 }
 
-.calculator-result .btn--primary{
-
-background:#fff;
-
-color:#0C5ADB;
-
+.calculator__price-row select {
+    width: 100px;
+    flex-shrink: 0;
 }
 
-#calcButton{
-
-margin-top:10px;
-
+.calculator__submit {
+    grid-column: 1 / -1;
+    min-height: 56px;
+    margin-top: 4px;
+    font-size: 16px;
 }
 
-.share-link-box{
-
-display:flex;
-
-align-items:center;
-
-gap:10px;
-
-margin-top:5px;
-
-width:100%;
-
+/* ── Result panel ──────────────────────────────────────── */
+.calculator__result {
+    background: var(--calculator-primary);
+    background-image: radial-gradient(circle at 100% 0%, rgba(245, 130, 32, .18) 0%, transparent 55%);
+    border-radius: var(--calculator-radius-lg);
+    padding: 32px;
+    color: #FFFFFF;
+    box-shadow: 0 30px 60px rgba(13, 59, 102, .25);
+    position: sticky;
+    top: 120px;
 }
 
-#shareLinkInput{
-
-flex:1;
-
-height:44px;
-
-padding:0 14px;
-
-border-radius:8px;
-
-border:none;
-
-font-size:14px;
-
-color:#242424;
-
+.calculator__result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, .85);
+    background: rgba(255, 255, 255, .1);
+    border-radius: 100px;
+    padding: 6px 14px;
+    margin-bottom: 22px;
 }
 
-.share-link-copied{
-
-font-size:13px;
-
-font-weight:600;
-
-color:#4ADE80;
-
-white-space:nowrap;
-
+.calculator__result-placeholder {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, .65);
 }
 
-.calculator-explainer{
-
-margin-top:40px;
-
-background:#fff;
-
-border-radius:20px;
-
-padding:10px 40px;
-
-box-shadow:0 15px 40px rgba(0,0,0,.05);
-
+.calculator__result-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .7);
+    margin-bottom: 6px;
 }
 
-.calculator-explainer summary{
-
-cursor:pointer;
-
-padding:22px 0;
-
-font-weight:700;
-
-font-size:18px;
-
-color:#242424;
-
-list-style:none;
-
+.calculator__result-amount {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1.1;
 }
 
-.calculator-explainer summary::-webkit-details-marker{
-
-display:none;
-
+.calculator__result-amount-secondary {
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .6);
 }
 
-.calculator-explainer summary::after{
-
-content:"+";
-
-float:right;
-
-font-size:22px;
-
-color:#0C5ADB;
-
+/* :last-of-type would match the last <p> in the whole panel (unrelated
+   ones exist further down), not the last secondary line specifically —
+   this adjacent-sibling selector correctly targets just the second of
+   the two secondary lines, so only the pair together gets one gap below */
+.calculator__result-amount-secondary + .calculator__result-amount-secondary {
+    margin-bottom: 18px;
 }
 
-.calculator-explainer details[open] summary::after{
-
-content:"\2212";
-
+.calculator__result-checklist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
 }
 
-.explainer-content{
-
-padding-bottom:30px;
-
+.calculator__result-checklist li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .85);
 }
 
-.explainer-content h4{
-
-margin:20px 0 10px;
-
-color:#0C5ADB;
-
+.calculator__result-checklist li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--calculator-accent);
 }
 
-.explainer-content p,
-.explainer-content li{
-
-color:#555;
-
-line-height:1.7;
-
-font-size:15px;
-
+.calculator__result-pension {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: var(--calculator-radius);
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(255, 255, 255, .14);
 }
 
-.explainer-content ul{
-
-padding-left:20px;
-
-margin-bottom:10px;
-
+.calculator__result-pension-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .75);
 }
 
-.explainer-disclaimer{
-
-margin-top:20px;
-
-font-style:italic;
-
-color:#888;
-
-font-size:13px;
-
+.calculator__result-pension-amount {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    white-space: nowrap;
 }
 
-.print-only{
-
-display:none;
-
+.calculator__result-pension-amount-primary {
+    font-size: 18px;
+    font-weight: 800;
+    color: #FFFFFF;
 }
 
-@media print{
-
-body *{
-
-visibility:hidden;
-
+.calculator__result-pension-amount-secondary {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .6);
 }
 
-#printSummary,
-#printSummary *{
-
-visibility:visible;
-
+.calculator__result-note {
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, .65);
+    margin-bottom: 8px;
 }
 
-#printSummary{
-
-display:block !important;
-
-position:absolute;
-
-top:0;
-
-left:0;
-
-width:100%;
-
-padding:20px;
-
+/* only the first note gets the divider, separating the whole notes
+   block from the checklist above — a second stacked border between
+   the two notes would just be visual noise */
+.calculator__result-note:first-of-type {
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, .14);
 }
 
-#printSummary h1{
-
-font-size:22px;
-
-margin-bottom:10px;
-
+.calculator__result-rate {
+    font-size: 12px;
+    color: rgba(255, 255, 255, .65);
+    margin-bottom: 22px;
 }
 
-#printSummary h2{
-
-font-size:17px;
-
-margin:20px 0 10px;
-
+.calculator__reassure {
+    background: rgba(255, 255, 255, .08);
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: var(--calculator-radius);
+    padding: 18px;
 }
 
-#printSummary table{
-
-width:100%;
-
-border-collapse:collapse;
-
+.calculator__reassure-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
 }
 
-#printSummary td{
-
-padding:8px 0;
-
-border-bottom:1px solid #ddd;
-
+.calculator__reassure-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, .7);
+    margin-bottom: 16px;
 }
 
+.calculator__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 52px;
+    width: 100%;
+    border-radius: var(--calculator-radius);
+    background: var(--calculator-accent);
+    color: var(--calculator-primary);
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow: 0 10px 24px rgba(245, 130, 32, .28);
+    transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
 }
 
-@media(max-width:991px){
-
-.calculator-wrapper{
-
-grid-template-columns:1fr;
-
+.calculator__cta:hover {
+    background: var(--calculator-accent-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(245, 130, 32, .34);
 }
 
-.calculator-form .form-grid{
-
-grid-template-columns:1fr;
-
+.calculator__cta:focus-visible {
+    outline: 3px solid rgba(245, 130, 32, .4);
+    outline-offset: 2px;
 }
 
-.calculator-result{
-
-position:static;
-
+/* ── Explainer ─────────────────────────────────────────── */
+.calculator__explainer {
+    margin-top: 24px;
+    background: #FFFFFF;
+    border: 1px solid var(--calculator-border);
+    border-radius: var(--calculator-radius-lg);
+    padding: 8px 32px;
 }
 
-.calculator-actions{
-
-flex-direction:column;
-
+.calculator__explainer summary {
+    cursor: pointer;
+    padding: 20px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--calculator-text);
+    list-style: none;
 }
 
-.calculator-actions .btn--primary,
-.calculator-actions .btn--hero-outline{
-
-width:100%;
-
-text-align:center;
-
+.calculator__explainer summary::-webkit-details-marker {
+    display: none;
 }
 
+.calculator__explainer summary::after {
+    content: "+";
+    float: right;
+    font-size: 20px;
+    color: var(--calculator-primary);
+}
+
+.calculator__explainer details[open] summary::after {
+    content: "\2212";
+}
+
+.calculator__explainer-content {
+    padding-bottom: 28px;
+}
+
+.calculator__explainer-content h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--calculator-primary);
+    margin: 18px 0 6px;
+}
+
+.calculator__explainer-content h3:first-child {
+    margin-top: 0;
+}
+
+.calculator__explainer-content p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--calculator-muted);
+}
+
+.calculator__explainer-disclaimer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--calculator-border);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--calculator-muted);
 }
