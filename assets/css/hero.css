@@ -1,0 +1,442 @@
+/* ============================================================
+   Hero — CUSBRO
+   ============================================================ */
+.hero {
+    --hero-primary: #0D3B66;
+    --hero-accent: #F58220;
+    --hero-accent-dark: #DD6F10;
+    --hero-bg: #FFFFFF;
+    --hero-light: #F7F8FA;
+    --hero-border: #E6EAF0;
+    --hero-text: #1A1A1A;
+    --hero-muted: #5B6472;
+    --hero-radius: 14px;
+    --hero-radius-lg: 22px;
+    --hero-container: 1320px;
+    --hero-card-p: 32px;
+
+    background: var(--hero-bg);
+    padding-block: 120px;
+    overflow: hidden;
+}
+
+.hero .container {
+    width: min(var(--hero-container), 92%);
+}
+
+.hero__grid {
+    display: grid;
+    grid-template-columns: 1fr 440px;
+    align-items: start;
+    gap: 64px;
+}
+
+/* ── Scroll cue ────────────────────────────────────────── */
+.hero__scroll-cue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    margin: 56px auto 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--hero-muted);
+    animation: hero-scroll-cue-bounce 2.2s ease-in-out infinite;
+}
+
+.hero__scroll-cue:hover,
+.hero__scroll-cue:focus-visible {
+    color: var(--hero-primary);
+}
+
+.hero__scroll-cue:focus-visible {
+    outline: 2px solid var(--hero-primary);
+    outline-offset: 4px;
+}
+
+@keyframes hero-scroll-cue-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero__scroll-cue { animation: none; }
+}
+
+/* ── Badge ─────────────────────────────────────────────── */
+.hero__badge {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    background: var(--hero-light);
+    border: 1px solid var(--hero-border);
+    border-radius: 100px;
+    padding: 8px 18px 8px 14px;
+    margin-bottom: 20px;
+}
+
+.hero__badge-stars {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--hero-accent);
+}
+
+.hero__badge-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--hero-text);
+}
+
+/* ── Heading ───────────────────────────────────────────── */
+.hero__title {
+    font-size: clamp(31px, 3.5vw, 54px);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -.02em;
+    color: var(--hero-text);
+    margin-bottom: 20px;
+}
+
+.hero__subtitle {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--hero-text);
+    max-width: 540px;
+}
+
+.hero__subtitle--muted {
+    font-size: 16px;
+    color: var(--hero-muted);
+}
+
+/* ── Promise block ─────────────────────────────────────── */
+.hero__promise {
+    background: var(--hero-light);
+    border: 1px solid var(--hero-border);
+    border-left: 3px solid var(--hero-accent);
+    border-radius: var(--hero-radius);
+    padding: 18px 20px;
+    margin-top: 22px;
+}
+
+.hero__promise-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--hero-primary);
+}
+
+.hero__promise-title svg {
+    flex-shrink: 0;
+    color: var(--hero-accent);
+}
+
+.hero__promise-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-top: 10px;
+}
+
+.hero__promise-list li {
+    position: relative;
+    padding-left: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--hero-text);
+}
+
+.hero__promise-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--hero-accent);
+}
+
+/* ── CTAs ──────────────────────────────────────────────── */
+.hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 24px;
+    margin-bottom: 32px;
+}
+
+.hero__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 60px;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 0 30px;
+    border-radius: var(--hero-radius);
+    border: 2px solid transparent;
+    transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease;
+    white-space: nowrap;
+}
+
+/* Dark text on the accent background: white-on-#F58220 measures ~2.65:1
+   and fails WCAG AA even at large text — navy-on-accent measures ~4.3:1. */
+.hero__cta--primary {
+    background: var(--hero-accent);
+    color: var(--hero-primary);
+    box-shadow: 0 10px 24px rgba(245, 130, 32, .28);
+}
+
+.hero__cta--primary:hover {
+    background: var(--hero-accent-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(245, 130, 32, .34);
+}
+
+.hero__cta--primary:focus-visible {
+    outline: 3px solid rgba(245, 130, 32, .4);
+    outline-offset: 2px;
+}
+
+.hero__cta-icon {
+    transition: transform .2s ease;
+}
+
+.hero__cta--primary:hover .hero__cta-icon {
+    transform: translateX(3px);
+}
+
+.hero__cta--secondary {
+    background: #fff;
+    color: var(--hero-primary);
+    border-color: var(--hero-border);
+}
+
+.hero__cta--secondary:hover {
+    border-color: var(--hero-primary);
+    background: var(--hero-light);
+}
+
+.hero__cta--secondary:focus-visible {
+    outline: 3px solid rgba(13, 59, 102, .25);
+    outline-offset: 2px;
+}
+
+/* ── Trust features ────────────────────────────────────── */
+.hero__features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 28px;
+}
+
+.hero__feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--hero-text);
+}
+
+.hero__feature-icon {
+    flex-shrink: 0;
+    color: var(--hero-accent);
+}
+
+/* ── Info card ─────────────────────────────────────────── */
+.hero__card-wrap {
+    position: relative;
+}
+
+.hero__card {
+    background: var(--hero-primary);
+    background-image: radial-gradient(circle at 100% 0%, rgba(245, 130, 32, .18) 0%, transparent 55%);
+    border-radius: var(--hero-radius-lg);
+    padding: var(--hero-card-p);
+    color: #fff;
+    box-shadow: 0 30px 60px rgba(13, 59, 102, .25);
+}
+
+.hero__card-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, .85);
+    background: rgba(255, 255, 255, .1);
+    border-radius: 100px;
+    padding: 6px 14px;
+    margin-bottom: 18px;
+}
+
+.hero__card-kicker svg {
+    flex-shrink: 0;
+    color: var(--hero-accent);
+}
+
+.hero__card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 22px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, .14);
+}
+
+.hero__card-logo {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -.01em;
+}
+
+.hero__card-tagline {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, .55);
+}
+
+.hero__card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.hero__card-tags li {
+    font-size: 13px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, .1);
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 100px;
+    padding: 7px 14px;
+}
+
+.hero__card-directions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.hero__card-directions li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .8);
+}
+
+.hero__card-directions svg {
+    color: var(--hero-accent);
+}
+
+.hero__card-divider {
+    height: 1px;
+    border: 0;
+    background: rgba(255, 255, 255, .14);
+    margin-bottom: 22px;
+}
+
+.hero__card-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 18px;
+}
+
+.hero__card-contact {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    padding: 10px 12px;
+    margin-inline: -12px;
+    border-radius: var(--hero-radius);
+    transition: background-color .2s ease;
+}
+
+.hero__card-contact:hover {
+    background: rgba(255, 255, 255, .1);
+}
+
+.hero__card-contact:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, .6);
+    outline-offset: 2px;
+}
+
+.hero__card-contact-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: #fff;
+}
+
+.hero__card-contact--telegram .hero__card-contact-icon { background: #26A5E4; }
+.hero__card-contact--viber .hero__card-contact-icon { background: #7360F2; }
+.hero__card-contact--whatsapp .hero__card-contact-icon { background: #25D366; }
+
+.hero__card-phone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 60px;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -.01em;
+    color: var(--hero-primary);
+    background: var(--hero-accent);
+    border: 2px solid transparent;
+    border-radius: var(--hero-radius);
+    padding: 10px 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .18);
+    transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.hero__card-phone:hover {
+    background: var(--hero-accent-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, .22);
+}
+
+.hero__card-phone:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, .7);
+    outline-offset: 2px;
+}
+
+.hero__card-phone svg {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    color: var(--hero-primary);
+}
+
+.hero__card-region {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .7);
+}
+
+.hero__card-region svg {
+    color: var(--hero-accent);
+}

@@ -1,21 +1,11 @@
 <?php
-/**
- * Enqueue scripts and styles
- */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-function cusbro_enqueue_assets(): void
+function cusbro_enqueue_assets()
 {
-    wp_enqueue_style(
-        'cusbro-fonts',
-        'https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap',
-        [],
-        null
-    );
-
     wp_enqueue_style(
         'cusbro-style',
         get_stylesheet_uri(),
@@ -23,20 +13,55 @@ function cusbro_enqueue_assets(): void
         CUSBRO_VERSION
     );
 
-    wp_enqueue_style(
-        'cusbro-main',
-        CUSBRO_URI . '/assets/css/main.css',
-        ['cusbro-style', 'cusbro-fonts'],
-        CUSBRO_VERSION
-    );
+    $styles = [
+
+        'main',
+        'header',
+        'hero',
+        'services',
+        'advantages',
+        'about',
+        'auto',
+        'process',
+        'calculator',
+        'reviews',
+        'stats',
+        'recent-posts',
+        'faq',
+        'contact',
+        'cta',
+        'footer',
+        'responsive'
+
+    ];
+
+    foreach ($styles as $style) {
+
+        wp_enqueue_style(
+            'cusbro-' . $style,
+            get_template_directory_uri() . '/assets/css/' . $style . '.css',
+            ['cusbro-style'],
+            CUSBRO_VERSION
+        );
+
+    }
 
     wp_enqueue_script(
         'cusbro-main',
-        CUSBRO_URI . '/assets/js/main.js',
+        get_template_directory_uri() . '/assets/js/main.js',
         [],
         CUSBRO_VERSION,
         true
     );
+
+    wp_enqueue_script(
+        'cusbro-calculator',
+        get_template_directory_uri() . '/assets/js/calculator-auto.js',
+        [],
+        CUSBRO_VERSION,
+        true
+    );
+
 }
 
 add_action('wp_enqueue_scripts', 'cusbro_enqueue_assets');

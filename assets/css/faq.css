@@ -1,0 +1,26 @@
+/* 14. FAQ
+   ============================================================ */
+.faq { background: var(--bg-soft); }
+.faq__inner { display: grid; grid-template-columns: 280px 1fr; gap: 72px; align-items: start; }
+.faq__list { display: flex; flex-direction: column; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-item:first-child { border-top: 1px solid var(--border); }
+.faq-item__question {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dark);
+    text-align: left;
+    transition: color var(--ease);
+}
+.faq-item__question:hover { color: var(--primary); }
+.faq-item__icon { flex-shrink: 0; color: var(--muted); transition: transform var(--ease); }
+.faq-item.is-open .faq-item__icon { transform: rotate(180deg); }
+.faq-item.is-open .faq-item__question { color: var(--primary); }
+.faq-item__answer { padding-bottom: 18px; font-size: 14px; color: var(--muted); line-height: 1.75; }
+.faq-item__answer[hidden] { display: none; }

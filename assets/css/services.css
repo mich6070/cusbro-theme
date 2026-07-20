@@ -1,0 +1,190 @@
+/* ============================================================
+   Services — CUSBRO
+   ============================================================ */
+.services {
+    --services-primary: #0D3B66;
+    --services-accent: #F58220;
+    --services-accent-dark: #DD6F10;
+    --services-light: #F7F8FA;
+    --services-border: #E6EAF0;
+    --services-text: #1A1A1A;
+    --services-muted: #5B6472;
+    --services-radius: 14px;
+    --services-radius-lg: 22px;
+
+    background: #FFFFFF;
+    padding-block: 120px;
+}
+
+.services .container {
+    width: min(1320px, 92%);
+    margin-inline: auto;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.services__header {
+    max-width: 620px;
+    margin-bottom: 56px;
+}
+
+.services__title {
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    color: var(--services-text);
+    margin-bottom: 12px;
+}
+
+.services__subtitle {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--services-muted);
+}
+
+/* ── Grid ──────────────────────────────────────────────── */
+.services__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.services__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    background: #FFFFFF;
+    border: 1px solid var(--services-border);
+    border-radius: var(--services-radius-lg);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.services__card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 45px rgba(13, 59, 102, .12);
+    border-color: transparent;
+}
+
+.services__card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 22px;
+    border-radius: var(--services-radius);
+    background: rgba(13, 59, 102, .06);
+    color: var(--services-primary);
+}
+
+.services__card-title {
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--services-text);
+    margin-bottom: 10px;
+}
+
+.services__card-desc {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--services-muted);
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.services__card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--services-primary);
+}
+
+.services__card-link svg {
+    color: var(--services-accent);
+    transition: transform .2s ease;
+}
+
+/* text stays navy on hover — accent-orange text on white measures
+   ~2.65:1 and fails WCAG AA; the icon (decorative, aria-hidden) is
+   exempt, so only it carries the accent color */
+.services__card:hover .services__card-link {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.services__card:hover .services__card-link svg {
+    transform: translateX(4px);
+}
+
+/* whole card is clickable via the stretched link, while only
+   "Дізнатися більше" is shown as the visible affordance */
+.services__card-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+}
+
+.services__card-link:focus-visible {
+    outline: 2px solid var(--services-primary);
+    outline-offset: 4px;
+}
+
+/* ── Trust / CTA strip ─────────────────────────────────── */
+.services__trust {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 56px;
+    padding: 28px 36px;
+    background: var(--services-light);
+    border: 1px solid var(--services-border);
+    border-left: 3px solid var(--services-accent);
+    border-radius: var(--services-radius-lg);
+}
+
+.services__trust-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--services-text);
+    margin-bottom: 4px;
+}
+
+.services__trust-desc {
+    font-size: 15px;
+    color: var(--services-muted);
+}
+
+.services__trust-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    min-height: 60px;
+    padding: 0 30px;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--services-primary);
+    background: var(--services-accent);
+    border-radius: var(--services-radius);
+    white-space: nowrap;
+    box-shadow: 0 10px 24px rgba(245, 130, 32, .28);
+    transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.services__trust-cta:hover {
+    background: var(--services-accent-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(245, 130, 32, .34);
+}
+
+.services__trust-cta:focus-visible {
+    outline: 3px solid rgba(245, 130, 32, .4);
+    outline-offset: 2px;
+}

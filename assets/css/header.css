@@ -1,0 +1,205 @@
+/* ============================================================
+   Header — CUSBRO
+   ============================================================ */
+.site-header {
+    --header-accent: #F58220;
+    --header-accent-dark: #DD6F10;
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-h);
+    background: var(--dark);
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+
+.site-header .container {
+    width: min(1320px, 92%);
+    height: 100%;
+}
+
+.header-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 100%;
+}
+
+/* ── Logo ──────────────────────────────────────────────── */
+.logo {
+    flex-shrink: 0;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.logo-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -.02em;
+}
+
+.logo-subtitle {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, .5);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+/* ── Navigation ────────────────────────────────────────── */
+.main-navigation {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.main-menu {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.main-menu li a {
+    display: block;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, .7);
+    border-radius: var(--r-sm);
+    transition: background-color .2s ease, color .2s ease;
+}
+
+.main-menu li a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, .08);
+}
+
+.main-menu li.current-menu-item a {
+    color: #fff;
+    background: rgba(255, 255, 255, .1);
+}
+
+/* ── Right side ────────────────────────────────────────── */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-shrink: 0;
+}
+
+.phone {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    transition: color .2s ease;
+}
+
+.phone:hover {
+    color: var(--header-accent);
+}
+
+.phone-icon {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.header-socials {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .08);
+    color: #fff;
+    transition: background-color .2s ease, transform .2s ease;
+}
+
+.social-link:hover {
+    transform: translateY(-2px);
+}
+
+.social-link.telegram:hover { background: #26A5E4; }
+.social-link.viber:hover { background: #7360F2; }
+.social-link.whatsapp:hover { background: #25D366; }
+
+.social-link:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, .6);
+    outline-offset: 2px;
+}
+
+.btn-header {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--header-accent);
+    padding: 11px 22px;
+    border-radius: 10px;
+    white-space: nowrap;
+    transition: background-color .2s ease, transform .2s ease;
+}
+
+.btn-header:hover {
+    background: var(--header-accent-dark);
+    transform: translateY(-1px);
+}
+
+.btn-header:focus-visible {
+    outline: 3px solid rgba(245, 130, 32, .4);
+    outline-offset: 2px;
+}
+
+/* ── Burger (mobile) ───────────────────────────────────── */
+.burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    flex-shrink: 0;
+}
+
+.burger span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: #fff;
+    border-radius: 2px;
+    transition: transform .2s ease, opacity .2s ease;
+}
+
+.burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Duplicated phone + CTA shown only inside the mobile dropdown (see
+   responsive.css) so the desktop header-right block never has to
+   shrink — that shrinking is what pushed .burger off-screen. */
+.main-navigation__footer {
+    display: none;
+}

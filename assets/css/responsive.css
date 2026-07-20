@@ -1,0 +1,127 @@
+/* 18. Responsive
+   ============================================================ */
+@media (max-width: 1100px) {
+    .hero__grid { grid-template-columns: 1fr 380px; gap: 40px; }
+    .header-wrapper { gap: 14px; }
+    .main-menu { gap: 0; }
+    .header-right .phone-text { display: none; }
+    /* connecting lines only make sense across a single row — once the
+       stepper wraps to two rows, a line drawn step-to-step would cut
+       across unrelated steps, so it's dropped rather than faked */
+    .process__steps { grid-template-columns: repeat(2, 1fr); gap: 40px 24px; }
+    .process__step::after { display: none; }
+    .faq__inner { grid-template-columns: 1fr; gap: 40px; }
+    .cta__inner { grid-template-columns: 1fr; gap: 48px; }
+    .cta__form { max-width: 520px; }
+    .tab-panel__inner { grid-template-columns: 1fr; }
+    .tab-panel__image { display: none; }
+}
+@media (max-width: 900px) {
+    .hero { padding-block: 80px; }
+    .hero__grid { grid-template-columns: 1fr; gap: 48px; }
+    .hero__card-wrap { max-width: 440px; }
+    .hero__subtitle { max-width: none; }
+    .footer__top { grid-template-columns: 1fr 1fr; }
+    .footer__brand { grid-column: 1 / -1; }
+    .section__header--row { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 768px) {
+    section { padding: 60px 0; }
+    .hero { padding-block: 64px; }
+    .hero__title-break { display: none; }
+    .hero__promise { padding: 14px 16px; }
+    .hero__promise-title { font-size: 15px; }
+    .hero__scroll-cue { margin-top: 40px; }
+    .hero__actions { flex-direction: column; }
+    .hero__actions .hero__cta { width: 100%; }
+    .hero__features { grid-template-columns: 1fr; }
+    .hero__card { padding: 24px; }
+
+    .main-navigation {
+        display: none;
+        position: absolute;
+        inset-inline: 0;
+        top: 100%;
+        flex-direction: column;
+        background: var(--dark);
+        border-top: 1px solid rgba(255, 255, 255, .08);
+        padding: 8px 20px 20px;
+    }
+    .main-navigation.active { display: flex; }
+    .main-menu { flex-direction: column; align-items: stretch; gap: 2px; width: 100%; }
+    .main-menu li a { padding: 12px 14px; font-size: 15px; }
+
+    /* top bar reduces to logo + burger only — the fixed-width CTA
+       button no longer competes for space and can't push the burger
+       off-screen; phone + CTA reappear inside the dropdown instead */
+    .header-right { display: none; }
+    .burger { display: flex; }
+
+    .main-navigation__footer {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, .08);
+    }
+    .main-navigation__footer .phone { font-size: 15px; }
+    .main-navigation__footer .btn-header { width: 100%; }
+
+    .services { padding-block: 64px; }
+    .services__trust { flex-direction: column; align-items: flex-start; }
+    .services__trust-cta { width: 100%; }
+
+    .advantages { padding-block: 64px; }
+    .advantages__list { grid-template-columns: 1fr; gap: 0; }
+    /* :nth-child(2) matches the base rule's specificity (0,2,0), so
+       it must be re-targeted explicitly here to win on source order —
+       a bare .advantages__item override would lose that fight */
+    .advantages__item:nth-child(2) { border-top: 1px solid var(--advantages-border); padding-top: 32px; }
+
+    .stats__grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .posts__grid { grid-template-columns: 1fr; }
+    .footer__top { grid-template-columns: 1fr; gap: 36px; }
+    .footer__bottom { flex-direction: column; gap: 8px; text-align: center; }
+
+    .process { padding-block: 64px; }
+    .process__steps { grid-template-columns: 1fr; gap: 0; }
+    .process__step {
+        display: flex;
+        gap: 20px;
+        padding-bottom: 32px;
+    }
+    .process__step:last-child { padding-bottom: 0; }
+    .process__step-num { margin-bottom: 0; }
+    .process__step-content { flex: 1; min-width: 0; }
+    /* vertical rail instead of the desktop horizontal one — anchored
+       to the same circle geometry so it lines up under it. Re-declares
+       display because the 1100px rule set display:none and both media
+       queries are active at once down here. Uses top+bottom rather than
+       height:calc(100%...) — .process__step's height is content-driven
+       (auto), and percentage heights resolve to 0 against an
+       auto-height positioned ancestor, so `height` would collapse the
+       line to nothing. bottom:0 lands exactly on the padding-box edge
+       (which already includes the 32px gap to the next step), so no
+       extra offset is needed. */
+    .process__step:not(:last-child)::after {
+        display: block;
+        top: var(--process-num-size);
+        bottom: 0;
+        left: calc(var(--process-num-size) / 2 - 1px);
+        width: 2px;
+        height: auto;
+    }
+    .process__cta { flex-direction: column; }
+    .process__cta-link { width: 100%; }
+}
+@media (max-width: 480px) {
+    .hero__badge { padding: 7px 14px 7px 12px; }
+    .hero__badge-text { font-size: 12px; }
+    .hero__card-tags { gap: 6px; }
+    .hero__card-directions { flex-wrap: wrap; }
+    .hero__card-phone { font-size: 19px; }
+    .services__grid { grid-template-columns: 1fr; }
+    .stats__grid { grid-template-columns: repeat(2, 1fr); }
+    .cta__form { padding: 24px; }
+}

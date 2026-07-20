@@ -1,29 +1,27 @@
 <?php
-/**
- * Front page template
- */
 
 get_header();
-?>
 
-<main id="main" class="site-main" role="main">
+get_template_part('template-parts/hero');
 
-    <?php get_template_part('template-parts/hero'); ?>
+get_template_part('template-parts/services');
 
-    <?php get_template_part('template-parts/what-we-help'); ?>
+get_template_part('template-parts/advantages');
 
-    <?php get_template_part('template-parts/popular-services'); ?>
+get_template_part('template-parts/calculator-auto');
 
-    <?php get_template_part('template-parts/stats'); ?>
+get_template_part('template-parts/process');
 
-    <?php get_template_part('template-parts/why-cusbro'); ?>
+get_template_part('template-parts/about');
 
-    <?php get_template_part('template-parts/recent-posts'); ?>
+get_template_part('template-parts/cases');
 
-    <?php get_template_part('template-parts/faq'); ?>
+get_template_part('template-parts/reviews');
 
-    <?php get_template_part('template-parts/cta'); ?>
+get_template_part('template-parts/faq');
 
-</main>
+get_template_part('template-parts/blog');
 
-<?php get_footer(); ?>
+get_template_part('template-parts/cta');
+
+get_footer();

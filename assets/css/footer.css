@@ -1,0 +1,55 @@
+/* 16. Footer
+   ============================================================ */
+.site-footer { background: #070F1E; color: rgba(255,255,255,.55); padding: 72px 0 0; }
+.footer__top {
+    display: grid;
+    grid-template-columns: 260px 1fr 1fr;
+    gap: 60px;
+    padding-bottom: 52px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.footer__logo {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -.04em;
+    color: #fff;
+    display: inline-block;
+    margin-bottom: 16px;
+}
+.footer__logo span { color: var(--primary); }
+.footer__desc { font-size: 14px; line-height: 1.7; margin-bottom: 24px; }
+.footer__social { display: flex; gap: 10px; }
+.footer__social a {
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,.07);
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,.5);
+    transition: background var(--ease), color var(--ease);
+}
+.footer__social a:hover { background: var(--primary); color: #fff; }
+.footer__heading {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 18px;
+}
+.footer__links { display: flex; flex-direction: column; gap: 10px; }
+.footer__links li a { font-size: 14px; color: rgba(255,255,255,.45); transition: color var(--ease); }
+.footer__links li a:hover { color: #fff; }
+.footer__links li:not(:has(a)) { font-size: 14px; }
+.footer__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 0;
+    font-size: 13px;
+    color: rgba(255,255,255,.28);
+}
+.footer__bottom a { color: rgba(255,255,255,.28); transition: color var(--ease); }
+.footer__bottom a:hover { color: rgba(255,255,255,.6); }

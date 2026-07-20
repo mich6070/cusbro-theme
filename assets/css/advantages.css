@@ -1,0 +1,97 @@
+/* ============================================================
+   Advantages — CUSBRO
+   ============================================================ */
+.advantages {
+    --advantages-primary: #0D3B66;
+    --advantages-accent: #F58220;
+    --advantages-light: #F7F8FA;
+    --advantages-border: #E6EAF0;
+    --advantages-text: #1A1A1A;
+    --advantages-muted: #5B6472;
+
+    background: var(--advantages-light);
+    padding-block: 120px;
+}
+
+.advantages .container {
+    width: min(1320px, 92%);
+    margin-inline: auto;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.advantages__header {
+    max-width: 620px;
+    margin-bottom: 56px;
+}
+
+.advantages__title {
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    color: var(--advantages-text);
+    margin-bottom: 12px;
+}
+
+.advantages__subtitle {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--advantages-muted);
+}
+
+/* ── List ──────────────────────────────────────────────── */
+.advantages__list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 64px;
+}
+
+.advantages__item {
+    padding: 32px 0;
+    border-top: 1px solid var(--advantages-border);
+}
+
+/* undo the border on the first row so the list starts clean */
+.advantages__item:nth-child(1),
+.advantages__item:nth-child(2) {
+    border-top: none;
+    padding-top: 0;
+}
+
+/* accent-orange text on the light background measures ~2.5:1 and
+   fails WCAG AA at any size — the accent lives in the decorative
+   bar (::before) instead, the numeral itself stays navy */
+.advantages__item-num {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    color: var(--advantages-primary);
+    margin-bottom: 12px;
+}
+
+.advantages__item-num::before {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--advantages-accent);
+}
+
+.advantages__item-title {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--advantages-primary);
+    margin-bottom: 8px;
+}
+
+.advantages__item-desc {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--advantages-muted);
+    max-width: 440px;
+}

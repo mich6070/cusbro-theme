@@ -1,0 +1,28 @@
+/* 11. Stats
+   ============================================================ */
+.stats-section {
+    background: var(--dark);
+    padding: 60px 0;
+}
+
+.stats__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    text-align: center;
+}
+
+.stat-item__num {
+    display: block;
+    font-size: clamp(36px, 4vw, 52px);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.stat-item__label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, .5);
+    font-weight: 500;
+}

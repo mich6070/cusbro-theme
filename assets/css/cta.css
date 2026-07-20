@@ -1,0 +1,79 @@
+/* 15. CTA / Contact
+   ============================================================ */
+.cta-section { background: var(--dark); padding: 96px 0; }
+.cta__inner { display: grid; grid-template-columns: 1fr 460px; gap: 80px; align-items: start; }
+.cta__title { font-size: clamp(26px, 3.5vw, 40px); font-weight: 800; color: #fff; margin-bottom: 16px; line-height: 1.2; }
+.cta__desc { font-size: 16px; color: rgba(255,255,255,.55); margin-bottom: 32px; line-height: 1.7; }
+.cta__contacts { display: flex; flex-direction: column; gap: 14px; }
+.cta__contacts li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: rgba(255,255,255,.7);
+    font-weight: 500;
+}
+.cta__contacts li svg { color: var(--primary); flex-shrink: 0; }
+.cta__contacts a:hover { color: #fff; }
+/* Contact channels — minimal unblock for the #contact anchor.
+   The old form here posted to itself with no server-side handler
+   (no wp_mail/$_POST processing anywhere in the theme), so it silently
+   swallowed every submission. Swapped for working channel links until
+   CTA gets its own full design pass later in the roadmap. */
+.cta__channels {
+    background: #fff;
+    padding: 36px;
+    border-radius: var(--r-xl);
+    box-shadow: var(--sh-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.cta__channels-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 6px;
+}
+.cta__channel-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    margin-inline: -14px;
+    border-radius: var(--r-md);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dark);
+    transition: background-color var(--ease);
+}
+.cta__channel-link:hover { background: var(--bg-soft); }
+.cta__channel-link:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.cta__channel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: #fff;
+}
+.cta__channel-link--telegram .cta__channel-icon { background: #26A5E4; }
+.cta__channel-link--viber .cta__channel-icon { background: #7360F2; }
+.cta__channel-link--whatsapp .cta__channel-icon { background: #25D366; }
+.cta__channels-phone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    padding: 15px 16px;
+    border-radius: var(--r-md);
+    background: var(--primary);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 800;
+    transition: background-color var(--ease);
+}
+.cta__channels-phone:hover { background: var(--primary-dark); }
+.cta__channels-phone:focus-visible { outline: 3px solid rgba(12,90,219,.4); outline-offset: 2px; }
