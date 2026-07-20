@@ -87,6 +87,47 @@
     flex-shrink: 0;
 }
 
+/* two rings expanding outward from the circle and fading out, offset
+   in time so a new one starts as the previous one is half faded —
+   reads as a continuous ripple rather than a single pulse */
+.process__step-num::before,
+.process__step-num::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 50%;
+    border: 2px solid var(--process-accent);
+    opacity: 0;
+}
+
+.process__step:hover .process__step-num::before,
+.process__step:hover .process__step-num::after {
+    animation: process-ripple 1.6s ease-out infinite;
+}
+
+.process__step:hover .process__step-num::after {
+    animation-delay: .8s;
+}
+
+@keyframes process-ripple {
+    0% {
+        opacity: .6;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.9);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .process__step:hover .process__step-num::before,
+    .process__step:hover .process__step-num::after {
+        animation: none;
+    }
+}
+
 .process__step-title {
     font-size: 19px;
     font-weight: 700;

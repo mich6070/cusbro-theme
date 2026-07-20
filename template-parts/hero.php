@@ -55,7 +55,7 @@ if (!defined('ABSPATH')) {
                     </a>
 
                     <a href="#calculator" class="hero__cta hero__cta--secondary">
-                        Розрахувати митні платежі
+                        Розрахувати вартість авто
                     </a>
 
                 </div>
@@ -196,7 +196,7 @@ if (!defined('ABSPATH')) {
                             <path d="M12 21s7-6.1 7-11.5a7 7 0 1 0-14 0C5 14.9 12 21 12 21Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
                             <circle cx="12" cy="9.5" r="2.4" stroke="currentColor" stroke-width="1.6"/>
                         </svg>
-                        Працюємо по всій Україні
+                        Працюємо з клієнтами зі всієї України
                     </p>
 
                 </article>

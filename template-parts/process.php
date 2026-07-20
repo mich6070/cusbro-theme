@@ -104,8 +104,8 @@ if (!defined('ABSPATH')) {
 
         <div class="process__cta">
             <p class="process__cta-text">Хочете знати вартість ще до першого кроку?</p>
-            <a href="#calculator" class="process__cta-link">
-                <span>Розрахувати митні платежі</span>
+            <a href="#contact" class="process__cta-link">
+                <span>Отримати консультацію</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
                     <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
