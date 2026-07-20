@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <?php if (is_front_page()) : ?>
-<meta name="description" content="Митне оформлення автомобілів та вантажів без прихованих платежів. Точний розрахунок мита ще до початку оформлення. Працюємо по всій Україні.">
+<meta name="description" content="Митне оформлення автомобілів та вантажів без прихованих платежів. Точний розрахунок мита ще до початку оформлення. Працюємо з клієнтами зі всієї України.">
 <?php else : ?>
 <meta name="description" content="<?php bloginfo('description'); ?>">
 <?php endif; ?>

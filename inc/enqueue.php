@@ -10,7 +10,7 @@ function cusbro_enqueue_assets()
         'cusbro-style',
         get_stylesheet_uri(),
         [],
-        CUSBRO_VERSION
+        cusbro_asset_version('/style.css')
     );
 
     $styles = [
@@ -41,7 +41,7 @@ function cusbro_enqueue_assets()
             'cusbro-' . $style,
             get_template_directory_uri() . '/assets/css/' . $style . '.css',
             ['cusbro-style'],
-            CUSBRO_VERSION
+            cusbro_asset_version('/assets/css/' . $style . '.css')
         );
 
     }
@@ -50,7 +50,7 @@ function cusbro_enqueue_assets()
         'cusbro-main',
         get_template_directory_uri() . '/assets/js/main.js',
         [],
-        CUSBRO_VERSION,
+        cusbro_asset_version('/assets/js/main.js'),
         true
     );
 
@@ -58,9 +58,11 @@ function cusbro_enqueue_assets()
         'cusbro-calculator',
         get_template_directory_uri() . '/assets/js/calculator-auto.js',
         [],
-        CUSBRO_VERSION,
+        cusbro_asset_version('/assets/js/calculator-auto.js'),
         true
     );
+
+    wp_localize_script('cusbro-calculator', 'CusbroCalcRates', cusbro_get_nbu_rates());
 
 }
 

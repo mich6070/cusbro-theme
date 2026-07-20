@@ -19,7 +19,6 @@ $includes = [
     '/inc/cleanup.php',
     '/inc/helpers.php',
     '/inc/schema.php',
-    '/inc/customs.php',
 ];
 
 foreach ($includes as $file) {
