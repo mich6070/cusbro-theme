@@ -10,6 +10,7 @@
        across unrelated steps, so it's dropped rather than faked */
     .process__steps { grid-template-columns: repeat(2, 1fr); gap: 40px 24px; }
     .process__step::after { display: none; }
+    .calculator__grid { grid-template-columns: 1fr 380px; gap: 24px; }
     .faq__inner { grid-template-columns: 1fr; gap: 40px; }
     .cta__inner { grid-template-columns: 1fr; gap: 48px; }
     .cta__form { max-width: 520px; }
@@ -70,7 +71,11 @@
 
     .services { padding-block: 64px; }
     .services__trust { flex-direction: column; align-items: flex-start; }
-    .services__trust-cta { width: 100%; }
+    /* nowrap in the base rule keeps it a tidy single-line pill on
+       desktop, but here the button is stretched to width:100% of a
+       narrow column — nowrap text no longer fits and spills past the
+       button's edges instead of wrapping */
+    .services__trust-cta { width: 100%; white-space: normal; text-align: center; }
 
     .advantages { padding-block: 64px; }
     .advantages__list { grid-template-columns: 1fr; gap: 0; }
@@ -114,8 +119,20 @@
     }
     .process__cta { flex-direction: column; }
     .process__cta-link { width: 100%; }
+
+    .calculator { padding-block: 64px; }
+    .calculator__grid { grid-template-columns: 1fr; gap: 24px; }
+    .calculator__form { grid-template-columns: 1fr; padding: 24px; }
+    .calculator__result { position: static; padding: 24px; }
+    .calculator__result-amount { font-size: 38px; }
+    .calculator__explainer { padding: 8px 24px; }
 }
 @media (max-width: 480px) {
+    /* the 92% container width leaves only ~17px of gutter at 420px, and
+       shrinks further on narrower phones — a bold 800-weight H1 sitting
+       that close to the edge reads as cramped, so pin a fixed minimum
+       gutter here instead of letting the percentage keep shrinking */
+    .hero .container { width: calc(100% - 40px); }
     .hero__badge { padding: 7px 14px 7px 12px; }
     .hero__badge-text { font-size: 12px; }
     .hero__card-tags { gap: 6px; }

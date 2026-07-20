@@ -1,319 +1,423 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     const button = document.getElementById("calcButton");
+    if (!button) return;
+
+    // Live NBU rates come from PHP (inc/helpers.php::cusbro_get_nbu_rates,
+    // localized in inc/enqueue.php) — cached server-side, refreshed a few
+    // times a day. These hardcoded values are only the last-resort
+    // fallback if that localization is missing entirely
+    const nbuRates = window.CusbroCalcRates || {};
+
+    // Every rate, threshold, and coefficient the calculation depends on
+    // lives here — nowhere else in this file. When the law changes,
+    // this is the only block that needs editing.
+    const CALC_CONFIG = {
+        RATES_TO_UAH: {
+            EUR: nbuRates.EUR || 45.00,
+            USD: nbuRates.USD || 41.50,
+            PLN: nbuRates.PLN || 10.50,
+            UAH: 1
+        },
+
+        CURRENCY_SYMBOLS: { EUR: "€", USD: "$", PLN: "zł", UAH: "₴" },
+
+        // the result always leads with whichever currency the visitor
+        // priced the car in (freshest in their head), then shows these
+        // as smaller reference lines — UAH first since that's what's
+        // actually paid, then EUR as the calculator's own base currency
+        // (or USD, if EUR was already the primary)
+        SECONDARY_CURRENCIES: {
+            EUR: ["UAH", "USD"],
+            USD: ["UAH", "EUR"],
+            PLN: ["UAH", "EUR"],
+            UAH: ["EUR", "USD"]
+        },
+
+        DUTY: {
+            STANDARD_PERCENT: 10,
+            ELECTRIC_PERCENT: 0,
+            // УКТ ЗЕД 8702 10 11 30 / 8702 10 19 90 / 8702 20 10 90: diesel
+            // and diesel-hybrid buses over 5000cm³ carry 20%, not the
+            // standard 10% — confirmed against the official Митний тариф.
+            // Smaller diesel buses, all petrol/petrol-hybrid, and electric
+            // (non-trolleybus) stay at the standard rate
+            BUS_LARGE_DIESEL_PERCENT: 20,
+            BUS_LARGE_DIESEL_THRESHOLD_CM3: 5000
+        },
+
+        VAT: { RATE: 0.20 },
+
+        PENSION: {
+            // checked top-down, first match wins
+            TIERS: [
+                { minUah: 878120, ratePercent: 5 },
+                { minUah: 499620, ratePercent: 4 },
+                { minUah: 0, ratePercent: 3 }
+            ]
+        },
+
+        AGE: { MIN_YEARS: 1, MAX_YEARS: 15 },
+
+        EXCISE: {
+            car: {
+                ELECTRIC_EUR_PER_KWH: 1,
+                ELECTRIC_DEFAULT_KWH: 60,
+                PETROL: { THRESHOLD_CM3: 3000, RATE_BELOW: 50, RATE_ABOVE: 100 },
+                DIESEL: { THRESHOLD_CM3: 3500, RATE_BELOW: 75, RATE_ABOVE: 150 }
+            },
+            moto: {
+                ELECTRIC_FLAT_EUR: 22,
+                // checked in order, first tier whose maxCm3 fits wins
+                TIERS: [
+                    { maxCm3: 500, ratePerCm3: 0.062 },
+                    { maxCm3: 800, ratePerCm3: 0.443 },
+                    { maxCm3: Infinity, ratePerCm3: 0.447 }
+                ]
+            },
+            truck: {
+                // "new" = never registered, flat rate by weight, age is
+                // irrelevant. "used" = registered at least once — base
+                // rate by weight, multiplied by the age coefficient below
+                WEIGHT_RATES: {
+                    under5t: { NEW_PER_CM3: 0.01, USED_BASE_PER_CM3: 0.02 },
+                    from5to20t: { NEW_PER_CM3: 0.013, USED_BASE_PER_CM3: 0.026 },
+                    over20t: { NEW_PER_CM3: 0.016, USED_BASE_PER_CM3: 0.033 }
+                },
+                // checked in order, first tier whose maxYears fits wins
+                // "до 5 років" is exclusive of 5 itself — a vehicle with
+                // exactly 5 full years elapsed is already "від 5 до 8",
+                // not "до 5". Only the lower bound of each tier is a firm
+                // legal boundary; upper bounds just fill the gap to the
+                // next tier's start
+                USED_AGE_COEFFICIENTS: [
+                    { minYears: 0, maxYears: 4, multiplier: 1 },
+                    { minYears: 5, maxYears: 8, multiplier: 40 },
+                    { minYears: 9, maxYears: Infinity, multiplier: 50 }
+                ]
+            },
+            bus: {
+                NEW_RATE_PER_CM3: 0.003,
+                USED_RATE_PER_CM3: 0.007,
+                USED_OVER_8_YEARS_MULTIPLIER: 50
+            }
+        }
+    };
+
+    const form = document.getElementById("autoCalculator");
     const fuelSelect = document.getElementById("fuel");
+    const engineGroup = document.getElementById("engine_group");
     const engineLabel = document.getElementById("engine_label");
     const engineInput = document.getElementById("engine");
     const vehicleTypeSelect = document.getElementById("vehicle_type");
     const truckWeightGroup = document.getElementById("truck_weight_group");
+    const truckWeightSelect = document.getElementById("truck_weight");
+    const conditionGroup = document.getElementById("condition_group");
+    const conditionSelect = document.getElementById("condition");
+    const yearGroup = document.getElementById("year_group");
+    const yearInput = document.getElementById("year");
+    const registrationDateGroup = document.getElementById("registration_date_group");
+    const registrationDateInput = document.getElementById("registration_date");
+    const resultPanel = document.getElementById("calculatorResult");
+    const resultPlaceholder = document.getElementById("resultPlaceholder");
+    const resultContent = document.getElementById("resultContent");
+    const grandTotalEl = document.getElementById("grand_total");
+    const grandTotalCurrencyEl = document.getElementById("grand_total_currency");
+    const grandTotalSecondary1El = document.getElementById("grand_total_secondary_1");
+    const grandTotalSecondary1CurrencyEl = document.getElementById("grand_total_secondary_1_currency");
+    const grandTotalSecondary2El = document.getElementById("grand_total_secondary_2");
+    const grandTotalSecondary2CurrencyEl = document.getElementById("grand_total_secondary_2_currency");
+    const pensionTotalEl = document.getElementById("pension_total");
+    const pensionTotalCurrencyEl = document.getElementById("pension_total_currency");
+    const pensionTotalSecondaryEl = document.getElementById("pension_total_secondary");
+    const pensionTotalSecondaryCurrencyEl = document.getElementById("pension_total_secondary_currency");
 
-    if (!button) return;
+    function updateEngineField() {
+        // moto excise is a flat electric rate that never reads engine
+        // volume — showing a required field the calculation ignores
+        // would be a dead input, so it hides instead of just relabeling
+        if (vehicleTypeSelect.value === "moto" && fuelSelect.value === "electric") {
+            engineGroup.hidden = true;
+            engineInput.required = false;
+            return;
+        }
 
-    const FIELD_IDS = ["vehicle_type", "origin", "importer_type", "price", "currency", "year", "fuel", "engine", "truck_weight", "first_reg"];
+        engineGroup.hidden = false;
+        engineInput.required = true;
 
-    const LABELS = {
-        vehicle_type: { car: "Легковий автомобіль", truck: "Вантажний автомобіль", moto: "Мотоцикл/мопед/моторолер", bus: "Автобус" },
-        origin: { eu: "Країни ЄС", other: "Інші країни" },
-        importer_type: { individual: "Фізична особа", company: "Юридична особа" },
-        fuel: { petrol: "Бензин", diesel: "Дизель", hybrid: "Гібрид", electric: "Електро", gas: "Газ (LPG)" },
-        first_reg: { yes: "Так", no: "Ні" }
-    };
-
-    let currentCalc = null;
-
-    function getFormState() {
-        const state = {};
-        FIELD_IDS.forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) state[id] = el.value;
-        });
-        return state;
-    }
-
-    function applyFormState(state) {
-        FIELD_IDS.forEach((id) => {
-            const el = document.getElementById(id);
-            if (el && state[id] !== undefined) el.value = state[id];
-        });
-    }
-
-    // Dynamic label and placeholder changes based on fuel type
-    fuelSelect.addEventListener("change", () => {
         if (fuelSelect.value === "electric") {
             engineLabel.textContent = "Ємність батареї (кВт·год)";
-            engineInput.placeholder = "60";
+            engineInput.placeholder = String(CALC_CONFIG.EXCISE.car.ELECTRIC_DEFAULT_KWH);
         } else {
             engineLabel.textContent = "Об'єм двигуна (см³)";
-            engineInput.placeholder = "1998";
+            engineInput.placeholder = vehicleTypeSelect.value === "moto" ? "650" : "1998";
         }
+    }
+
+    // year never enters the electric-car formula (duty is flat 0%, excise
+    // is battery kWh × rate, VAT checks today's calendar year, not the
+    // vehicle's) — asking for it there is a dead field, not just unused.
+    // moto excise is engine-volume-only regardless of fuel — never reads
+    // year either. Trucks/buses don't use this field at all anymore —
+    // see updateRegistrationDateField below
+    function updateYearField() {
+        const isElectricCar = vehicleTypeSelect.value === "car" && fuelSelect.value === "electric";
+        const isTruckOrBus = vehicleTypeSelect.value === "truck" || vehicleTypeSelect.value === "bus";
+        const isMoto = vehicleTypeSelect.value === "moto";
+        const hide = isElectricCar || isTruckOrBus || isMoto;
+        yearGroup.hidden = hide;
+        yearInput.required = !hide;
+    }
+
+    // motorcycles physically don't come in diesel/hybrid/LPG variants —
+    // only a petrol piston engine (крив.-шатунний механізм) or electric
+    function updateFuelOptionsForVehicleType() {
+        const isMoto = vehicleTypeSelect.value === "moto";
+        const motoIncompatibleFuels = ["diesel", "hybrid_petrol", "hybrid_diesel", "gas"];
+
+        motoIncompatibleFuels.forEach((value) => {
+            const option = fuelSelect.querySelector(`option[value="${value}"]`);
+            if (option) option.hidden = isMoto;
+        });
+
+        // don't silently keep an impossible combination if the current
+        // selection just became invalid for this vehicle type
+        if (isMoto && motoIncompatibleFuels.includes(fuelSelect.value)) {
+            fuelSelect.value = "petrol";
+        }
+    }
+
+    // trucks/buses age off the exact first-registration date, not a
+    // calendar-year difference — only meaningful for "used" (a "new",
+    // never-registered vehicle has no registration date to give)
+    function updateRegistrationDateField() {
+        const isTruckOrBus = vehicleTypeSelect.value === "truck" || vehicleTypeSelect.value === "bus";
+        const show = isTruckOrBus && conditionSelect.value === "used";
+        registrationDateGroup.hidden = !show;
+        registrationDateInput.required = show;
+    }
+
+    fuelSelect.addEventListener("change", () => {
+        updateEngineField();
+        updateYearField();
     });
 
-    // Dynamic form adjustments based on vehicle type
+    conditionSelect.addEventListener("change", updateRegistrationDateField);
+
     vehicleTypeSelect.addEventListener("change", () => {
-        const type = vehicleTypeSelect.value;
-        if (type === "moto" && fuelSelect.value !== "electric") {
-            engineLabel.textContent = "Об'єм двигуна (см³)";
-            engineInput.placeholder = "650";
-        }
-        truckWeightGroup.style.display = type === "truck" ? "flex" : "none";
+        const isTruck = vehicleTypeSelect.value === "truck";
+        const isBus = vehicleTypeSelect.value === "bus";
+        truckWeightGroup.hidden = !isTruck;
+        conditionGroup.hidden = !(isTruck || isBus);
+        updateFuelOptionsForVehicleType();
+        updateEngineField();
+        updateYearField();
+        updateRegistrationDateField();
     });
+
+    function priceToEur(price, currency) {
+        const rates = CALC_CONFIG.RATES_TO_UAH;
+        const priceInUah = price * rates[currency];
+        return priceInUah / rates.EUR;
+    }
+
+    function calculateDuty(priceInEur, fuel, vehicleType, engine) {
+        const cfg = CALC_CONFIG.DUTY;
+
+        // the 0% electric exemption is specific to passenger cars
+        // (8703 80) — electric trucks (8704 60 00 00), buses
+        // (8702 40 00 90), and motorcycles (8711 60) all pay the
+        // standard rate per the official Митний тариф, confirmed
+        // against the full 8701-8716 table
+        const isElectricCarExemption = fuel === "electric" && vehicleType === "car";
+        let rate = isElectricCarExemption ? cfg.ELECTRIC_PERCENT : cfg.STANDARD_PERCENT;
+
+        // "gas" (LPG) intentionally falls through to the spark-ignition
+        // rate below — LPG is a conversion of a petrol engine, not its own
+        // УКТ ЗЕД category, confirmed decision, not an oversight
+        const isDieselLike = fuel === "diesel" || fuel === "hybrid_diesel";
+        if (vehicleType === "bus" && isDieselLike && engine > cfg.BUS_LARGE_DIESEL_THRESHOLD_CM3) {
+            rate = cfg.BUS_LARGE_DIESEL_PERCENT;
+        }
+
+        return priceInEur * (rate / 100);
+    }
+
+    function calculateVehicleAge(year) {
+        const currentYear = new Date().getFullYear();
+        const age = currentYear - year - 1;
+        const { MIN_YEARS, MAX_YEARS } = CALC_CONFIG.AGE;
+        return Math.min(Math.max(age, MIN_YEARS), MAX_YEARS);
+    }
+
+    function calculateCarExcise(fuel, engine, year) {
+        const cfg = CALC_CONFIG.EXCISE.car;
+
+        if (fuel === "electric") {
+            const batteryCapacity = engine > 0 ? engine : cfg.ELECTRIC_DEFAULT_KWH;
+            return batteryCapacity * cfg.ELECTRIC_EUR_PER_KWH;
+        }
+
+        // Law № 2611-VIII has no separate hybrid rate — a hybrid still has
+        // a combustion engine and is taxed by its ignition type (petrol or
+        // diesel), same as any other 8703 vehicle. "gas" (LPG) is the same
+        // spark-ignition engine as petrol, just converted — confirmed, not
+        // an oversight
+        const isDieselLike = fuel === "diesel" || fuel === "hybrid_diesel";
+        const scale = isDieselLike ? cfg.DIESEL : cfg.PETROL;
+        const baseRate = engine > scale.THRESHOLD_CM3 ? scale.RATE_ABOVE : scale.RATE_BELOW;
+        return baseRate * (engine / 1000) * calculateVehicleAge(year);
+    }
+
+    function calculateMotoExcise(fuel, engine) {
+        const cfg = CALC_CONFIG.EXCISE.moto;
+        if (fuel === "electric") return cfg.ELECTRIC_FLAT_EUR;
+        const tier = cfg.TIERS.find((t) => engine <= t.maxCm3);
+        return engine * tier.ratePerCm3;
+    }
+
+    // truck/bus age off the exact first-registration date — a calendar-
+    // year subtraction (like calculateVehicleAge for cars) can be off by
+    // almost a full year depending on the month, and the age bracket
+    // (5/8-year thresholds) is exactly where that gap matters. Counts
+    // full years actually elapsed, not just calendar years crossed
+    function calculateFullYearsElapsed(dateString) {
+        if (!dateString) return 0;
+
+        const regDate = new Date(dateString);
+        const today = new Date();
+
+        let years = today.getFullYear() - regDate.getFullYear();
+        const hadAnniversaryThisYear =
+            today.getMonth() > regDate.getMonth() ||
+            (today.getMonth() === regDate.getMonth() && today.getDate() >= regDate.getDate());
+
+        if (!hadAnniversaryThisYear) {
+            years -= 1;
+        }
+
+        return Math.max(years, 0);
+    }
+
+    function calculateTruckExcise(condition, engine, registrationDate, truckWeight) {
+        const cfg = CALC_CONFIG.EXCISE.truck;
+        const rates = cfg.WEIGHT_RATES[truckWeight];
+
+        if (condition === "new") {
+            return engine * rates.NEW_PER_CM3;
+        }
+
+        const age = calculateFullYearsElapsed(registrationDate);
+        const tier = cfg.USED_AGE_COEFFICIENTS.find((t) => age >= t.minYears && age <= t.maxYears);
+        return engine * rates.USED_BASE_PER_CM3 * tier.multiplier;
+    }
+
+    function calculateBusExcise(condition, engine, registrationDate) {
+        const cfg = CALC_CONFIG.EXCISE.bus;
+
+        if (condition === "new") {
+            return engine * cfg.NEW_RATE_PER_CM3;
+        }
+
+        const age = calculateFullYearsElapsed(registrationDate);
+        const multiplier = age > 8 ? cfg.USED_OVER_8_YEARS_MULTIPLIER : 1;
+        return engine * cfg.USED_RATE_PER_CM3 * multiplier;
+    }
+
+    function calculateExcise(vehicleType, fuel, engine, year, truckWeight, condition, registrationDate) {
+        switch (vehicleType) {
+            case "car": return calculateCarExcise(fuel, engine, year);
+            case "moto": return calculateMotoExcise(fuel, engine);
+            case "truck": return calculateTruckExcise(condition, engine, registrationDate, truckWeight);
+            case "bus": return calculateBusExcise(condition, engine, registrationDate);
+            default: return 0;
+        }
+    }
+
+    function calculateVat(priceInEur, duty, excise) {
+        return (priceInEur + duty + excise) * CALC_CONFIG.VAT.RATE;
+    }
+
+    function calculatePension(priceInUah) {
+        const tiers = CALC_CONFIG.PENSION.TIERS;
+        const tier = tiers.find((t) => priceInUah > t.minUah) || tiers[tiers.length - 1];
+        return priceInUah * (tier.ratePercent / 100);
+    }
+
+    function convertFromEur(amountInEur, targetCurrency) {
+        const rates = CALC_CONFIG.RATES_TO_UAH;
+        const amountInUah = amountInEur * rates.EUR;
+        return amountInUah / rates[targetCurrency];
+    }
+
+    // renders one primary amount + N secondary reference amounts, all
+    // converted from the same EUR figure — primaryCurrency is whatever
+    // the visitor priced the car in, so the number they see first always
+    // matches the currency already in their head
+    function renderCurrencyAmounts(amountInEur, primaryCurrency, primaryValueEl, primaryCurrencyEl, secondaryEls) {
+        const symbols = CALC_CONFIG.CURRENCY_SYMBOLS;
+
+        primaryValueEl.textContent = Math.round(convertFromEur(amountInEur, primaryCurrency)).toLocaleString("uk-UA");
+        primaryCurrencyEl.textContent = symbols[primaryCurrency];
+
+        const secondaryCurrencies = CALC_CONFIG.SECONDARY_CURRENCIES[primaryCurrency] || CALC_CONFIG.SECONDARY_CURRENCIES.EUR;
+
+        secondaryEls.forEach((els, i) => {
+            const currency = secondaryCurrencies[i];
+            if (!currency) return;
+            els.valueEl.textContent = Math.round(convertFromEur(amountInEur, currency)).toLocaleString("uk-UA");
+            els.currencyEl.textContent = symbols[currency];
+        });
+    }
 
     function runCalculation() {
+        // calcButton is type="button" so the browser never runs native
+        // required/min/max validation on its own — reportValidity()
+        // triggers the same built-in bubbles manually and returns false
+        // without submitting anything, so an empty form no longer
+        // silently produces a "0 €" result
+        if (!form.reportValidity()) return;
+
         const vehicleType = vehicleTypeSelect.value;
-        const origin = document.getElementById("origin").value;
-        const importerType = document.getElementById("importer_type").value;
         const price = parseFloat(document.getElementById("price").value) || 0;
         const currency = document.getElementById("currency").value;
-        const firstReg = document.getElementById("first_reg").value;
         const fuel = fuelSelect.value;
         const engine = parseFloat(engineInput.value) || 0;
-        const year = parseInt(document.getElementById("year").value) || new Date().getFullYear();
+        const year = parseInt(document.getElementById("year").value, 10) || new Date().getFullYear();
+        const truckWeight = truckWeightSelect.value;
+        const condition = conditionSelect.value;
+        const registrationDate = registrationDateInput.value;
 
-        // Exchange rates (NBU)
-        const EUR_TO_UAH = 45.00;
-        const USD_TO_UAH = 41.50;
-        const PLN_TO_UAH = 10.50;
+        const priceInEur = priceToEur(price, currency);
+        const priceInUah = priceInEur * CALC_CONFIG.RATES_TO_UAH.EUR;
 
-        // Convert price to EUR and UAH
-        let priceInEur = price;
-        if (currency === "USD") {
-            priceInEur = price * (USD_TO_UAH / EUR_TO_UAH);
-        } else if (currency === "PLN") {
-            priceInEur = price * (PLN_TO_UAH / EUR_TO_UAH);
-        } else if (currency === "UAH") {
-            priceInEur = price / EUR_TO_UAH;
-        }
-        const priceInUah = priceInEur * EUR_TO_UAH;
+        const duty = calculateDuty(priceInEur, fuel, vehicleType, engine);
+        const excise = calculateExcise(vehicleType, fuel, engine, year, truckWeight, condition, registrationDate);
+        const vat = calculateVat(priceInEur, duty, excise);
+        const pensionInEur = calculatePension(priceInUah) / CALC_CONFIG.RATES_TO_UAH.EUR;
 
-        // 1. Duty (Мито)
-        let dutyRate = 10; // Default standard duty
-        if (fuel === "electric") {
-            dutyRate = 0;
-        } else if (origin === "eu" && importerType === "company") {
-            dutyRate = 5; // Reduced EU duty rate — only for legal entities
-        }
-        const duty = priceInEur * (dutyRate / 100);
+        // pension fund fee is shown separately, not folded into the
+        // customs clearance total — the two are legally distinct payments
+        const clearanceCost = duty + excise + vat;
 
-        // 2. Excise (Акциз)
-        let excise = 0;
-        const currentYear = new Date().getFullYear();
-        let age = currentYear - year - 1;
-        if (age < 1) age = 1;
-        if (age > 15) age = 15;
+        renderCurrencyAmounts(clearanceCost, currency, grandTotalEl, grandTotalCurrencyEl, [
+            { valueEl: grandTotalSecondary1El, currencyEl: grandTotalSecondary1CurrencyEl },
+            { valueEl: grandTotalSecondary2El, currencyEl: grandTotalSecondary2CurrencyEl }
+        ]);
 
-        if (vehicleType === "car") {
-            if (fuel === "electric") {
-                // Electric cars: 1 EUR per 1 kWh of battery capacity
-                const batteryCapacity = engine > 0 ? engine : 60;
-                excise = batteryCapacity * 1;
-            } else if (fuel === "hybrid") {
-                excise = 100;
-            } else {
-                // Petrol, Diesel, Gas
-                let baseRate = 50; // Petrol <= 3000 cm³
-                if (fuel === "petrol" || fuel === "gas") {
-                    if (engine > 3000) {
-                        baseRate = 100;
-                    }
-                } else if (fuel === "diesel") {
-                    baseRate = engine > 3500 ? 150 : 75;
-                }
-                excise = baseRate * (engine / 1000) * age;
-            }
-        } else if (vehicleType === "moto") {
-            // Мотоцикли, мопеди, моторолери (УКТ ЗЕД 8711, п.215.3.7 ПКУ) — фіксована ставка за см³, без вікового коефіцієнта
-            if (fuel === "electric") {
-                excise = 22; // Електричні мотоцикли/мопеди — 22 € за штуку
-            } else if (engine <= 500) {
-                excise = engine * 0.062;
-            } else if (engine <= 800) {
-                excise = engine * 0.443;
-            } else {
-                excise = engine * 0.447;
-            }
-        } else if (vehicleType === "truck") {
-            // Акциз для вантажівок (УКТ ЗЕД 8704, п.215.3.5-2 ПКУ), ставки "вживані" — кінцеві, без вікового коефіцієнта
-            const truckWeight = document.getElementById("truck_weight").value;
-            let rate;
-            if (fuel === "diesel") {
-                if (truckWeight === "over20t") rate = 0.033;
-                else if (truckWeight === "from5to20t") rate = 0.026;
-                else rate = 0.02;
-            } else {
-                // Бензин/газ/гібрид/електро: підтверджені лише ставки для дизеля та бензину,
-                // тому для інших типів палива застосовується бензинова шкала як найближче наближення
-                rate = truckWeight === "under5t" ? 0.02 : 0.026;
-            }
-            excise = engine * rate;
-        } else if (vehicleType === "bus") {
-            // Автобуси, 10+ місць (УКТ ЗЕД 8702, п.215.3.5 ПКУ): 0.003 €/см³ нові, 0.007 €/см³ вживані
-            const isNewVehicle = year >= currentYear;
-            excise = engine * (isNewVehicle ? 0.003 : 0.007);
-        }
+        renderCurrencyAmounts(pensionInEur, currency, pensionTotalEl, pensionTotalCurrencyEl, [
+            { valueEl: pensionTotalSecondaryEl, currencyEl: pensionTotalSecondaryCurrencyEl }
+        ]);
 
-        // 3. VAT (ПДВ)
-        // Electric cars are exempt from VAT in Ukraine until Jan 1, 2026.
-        // From Jan 1, 2026, they pay 20% VAT, but remain exempt from duty.
-        let vat = 0;
-        if (fuel !== "electric") {
-            vat = (priceInEur + duty + excise) * 0.20;
-        } else {
-            if (currentYear >= 2026) {
-                vat = (priceInEur + duty + excise) * 0.20;
-            }
-        }
+        resultPlaceholder.hidden = true;
+        resultContent.hidden = false;
 
-        // 4. Pension Fund (Пенсійний фонд)
-        let pension = 0;
-        let pensionRate = 0;
-        if (firstReg === "yes") {
-            pensionRate = 3;
-            if (priceInUah > 878120) {
-                pensionRate = 5;
-            } else if (priceInUah > 499620) {
-                pensionRate = 4;
-            }
-            const pensionInUah = priceInUah * (pensionRate / 100);
-            pension = pensionInUah / EUR_TO_UAH;
-        }
-
-        // 5. Totals
-        const totalCustoms = duty + excise + vat;
-        const totalCustomsUah = totalCustoms * EUR_TO_UAH;
-        const grandTotal = priceInEur + totalCustoms + pension;
-
-        // Update UI
-        document.getElementById("customs_val").innerHTML = priceInEur.toFixed(2) + " €";
-        document.getElementById("duty_rate").innerHTML = dutyRate;
-        document.getElementById("duty").innerHTML = duty.toFixed(2) + " €";
-        document.getElementById("excise").innerHTML = excise.toFixed(2) + " €";
-        document.getElementById("vat").innerHTML = vat.toFixed(2) + " €";
-        document.getElementById("pension_rate").innerHTML = pensionRate;
-        document.getElementById("pension").innerHTML = pension.toFixed(2) + " €";
-        document.getElementById("total").innerHTML = totalCustoms.toFixed(2) + " €";
-        document.getElementById("total_uah").innerHTML = Math.round(totalCustomsUah).toLocaleString("uk-UA") + " ₴";
-        document.getElementById("grand_total").innerHTML = grandTotal.toFixed(2) + " €";
-
-        currentCalc = {
-            form: getFormState(),
-            priceInEur, dutyRate, duty, excise, vat, pensionRate, pension,
-            totalCustoms, totalCustomsUah, grandTotal
-        };
+        // on mobile the result sits below the form and is off-screen
+        // after clicking; on desktop it's already visible beside the
+        // form, so "nearest" only moves the page when it actually needs to
+        resultPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 
     button.addEventListener("click", runCalculation);
-
-    // Prefill from a shared link (?price=...&year=...&fuel=... etc.) and auto-calculate
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("price")) {
-        const state = {};
-        FIELD_IDS.forEach((id) => {
-            if (urlParams.has(id)) state[id] = urlParams.get(id);
-        });
-        applyFormState(state);
-        truckWeightGroup.style.display = vehicleTypeSelect.value === "truck" ? "flex" : "none";
-        if (fuelSelect.value === "electric") {
-            engineLabel.textContent = "Ємність батареї (кВт·год)";
-            engineInput.placeholder = "60";
-        }
-        runCalculation();
-    }
-
-    // Share link
-    const btnShareLink = document.getElementById("btnShareLink");
-    if (btnShareLink) {
-        btnShareLink.addEventListener("click", () => {
-            const params = new URLSearchParams(getFormState());
-            const url = window.location.origin + window.location.pathname + "?" + params.toString() + "#calculator";
-            const box = document.getElementById("shareLinkBox");
-            const input = document.getElementById("shareLinkInput");
-            const copiedLabel = document.getElementById("shareLinkCopied");
-
-            box.style.display = "flex";
-            input.value = url;
-            input.select();
-
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(url).then(() => {
-                    copiedLabel.style.display = "inline";
-                    setTimeout(() => { copiedLabel.style.display = "none"; }, 2000);
-                });
-            }
-        });
-    }
-
-    function buildPrintSummaryHtml(calc) {
-        const f = calc.form;
-        const dateStr = new Date().toLocaleString("uk-UA");
-
-        return "<h1>Розрахунок митних платежів — CUSBRO</h1>"
-            + "<p>Дата розрахунку: " + dateStr + "</p>"
-            + "<h2>Параметри транспортного засобу</h2>"
-            + "<table>"
-            + "<tr><td>Тип ТЗ</td><td>" + (LABELS.vehicle_type[f.vehicle_type] || f.vehicle_type) + "</td></tr>"
-            + "<tr><td>Походження</td><td>" + (LABELS.origin[f.origin] || f.origin) + "</td></tr>"
-            + "<tr><td>Тип імпортера</td><td>" + (LABELS.importer_type[f.importer_type] || f.importer_type) + "</td></tr>"
-            + "<tr><td>Вартість</td><td>" + f.price + " " + f.currency + "</td></tr>"
-            + "<tr><td>Рік випуску</td><td>" + f.year + "</td></tr>"
-            + "<tr><td>Паливо</td><td>" + (LABELS.fuel[f.fuel] || f.fuel) + "</td></tr>"
-            + "<tr><td>Об'єм двигуна / ємність батареї</td><td>" + f.engine + "</td></tr>"
-            + "<tr><td>Перша реєстрація в Україні</td><td>" + (LABELS.first_reg[f.first_reg] || f.first_reg) + "</td></tr>"
-            + "</table>"
-            + "<h2>Результати розрахунку</h2>"
-            + "<table>"
-            + "<tr><td>Митна вартість</td><td>" + calc.priceInEur.toFixed(2) + " €</td></tr>"
-            + "<tr><td>Мито (" + calc.dutyRate + "%)</td><td>" + calc.duty.toFixed(2) + " €</td></tr>"
-            + "<tr><td>Акцизний збір</td><td>" + calc.excise.toFixed(2) + " €</td></tr>"
-            + "<tr><td>ПДВ (20%)</td><td>" + calc.vat.toFixed(2) + " €</td></tr>"
-            + "<tr><td>Пенсійний фонд (" + calc.pensionRate + "%)</td><td>" + calc.pension.toFixed(2) + " €</td></tr>"
-            + "<tr><td><strong>Всього платежів</strong></td><td><strong>" + calc.totalCustoms.toFixed(2) + " €</strong></td></tr>"
-            + "<tr><td>Всього в гривнях</td><td>" + Math.round(calc.totalCustomsUah).toLocaleString("uk-UA") + " ₴</td></tr>"
-            + "<tr><td>Вартість з розмитненням</td><td>" + calc.grandTotal.toFixed(2) + " €</td></tr>"
-            + "</table>"
-            + "<p>Орієнтовний розрахунок за методикою CUSBRO на основі ст. 215 Податкового кодексу України. Не є остаточною сумою до сплати.</p>";
-    }
-
-    // Save as PDF (via native browser print)
-    const btnSavePdf = document.getElementById("btnSavePdf");
-    if (btnSavePdf) {
-        btnSavePdf.addEventListener("click", () => {
-            if (!currentCalc) {
-                alert("Спочатку натисніть «Розрахувати платежі»");
-                return;
-            }
-            document.getElementById("printSummary").innerHTML = buildPrintSummaryHtml(currentCalc);
-            window.print();
-        });
-    }
-
-    // Order this exact car — pass data into the contact form
-    const btnOrderThisCar = document.getElementById("btnOrderThisCar");
-    if (btnOrderThisCar) {
-        btnOrderThisCar.addEventListener("click", () => {
-            if (!currentCalc) {
-                alert("Спочатку натисніть «Розрахувати платежі»");
-                return;
-            }
-            const f = currentCalc.form;
-            const message = document.getElementById("contact-message");
-            if (message) {
-                message.value = "Прошу розрахувати/оформити авто:\n"
-                    + "Тип ТЗ: " + (LABELS.vehicle_type[f.vehicle_type] || f.vehicle_type) + "\n"
-                    + "Походження: " + (LABELS.origin[f.origin] || f.origin) + "\n"
-                    + "Вартість: " + f.price + " " + f.currency + "\n"
-                    + "Рік випуску: " + f.year + "\n"
-                    + "Паливо: " + (LABELS.fuel[f.fuel] || f.fuel) + "\n"
-                    + "Об'єм двигуна/батареї: " + f.engine + "\n"
-                    + "Орієнтовна сума платежів: " + currentCalc.totalCustoms.toFixed(2) + " € ("
-                    + Math.round(currentCalc.totalCustomsUah).toLocaleString("uk-UA") + " ₴)";
-            }
-            const contactSection = document.getElementById("contact");
-            if (contactSection) {
-                contactSection.scrollIntoView({ behavior: "smooth" });
-            }
-            const nameField = document.getElementById("contact-name");
-            if (nameField) nameField.focus();
-        });
-    }
 
 });

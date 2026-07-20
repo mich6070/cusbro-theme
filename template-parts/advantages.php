@@ -63,7 +63,7 @@ if (!defined('ABSPATH')) {
 
             <article class="advantages__item">
                 <span class="advantages__item-num" aria-hidden="true">06</span>
-                <h3 class="advantages__item-title">Працюємо по всій Україні</h3>
+                <h3 class="advantages__item-title">Працюємо з клієнтами зі всієї України</h3>
                 <p class="advantages__item-desc">
                     Дистанційний супровід без прив'язки до міста чи конкретної митниці.
                 </p>

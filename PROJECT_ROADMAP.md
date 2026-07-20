@@ -29,11 +29,29 @@ problem, or a responsiveness problem.
 
 **Process: Built ✅ QA ✅ Narrative ✅ Release ✅ — CLOSED**
 
-**Current Sprint:** Calculator
-**Current Block:** Calculator
-**Next Block:** Cases
-**Current Goal:** Deliver on the promise Process just made — turn "we'll
-calculate everything upfront" into an actual working, on-brand tool
+**Calculator: Built ✅ QA ✅ Narrative ✅ Release ✅ — CLOSED**
+
+Technical QA passed live (DOM/IDs, no PHP warnings, no duplicate IDs,
+dead pre-refactor engine purged, cache-busting fixed). Visual QA ran as
+an extensive real screenshot + reference-tool-cross-check pass — see
+"Calculator — Visual QA findings" below for the full list of confirmed
+bugs found and fixed (bus duty rate, car/hybrid/gas excise correctness,
+electric duty scope, exact registration-date age precision, live NBU
+rates, multi-currency display, pension separation, motorcycle fuel
+options). Narrative confirmed: the block delivers on Hero's "усі митні
+платежі ще до оформлення" promise and bridges cleanly into `#contact`.
+Release: every CTA target verified working.
+
+Per the No-jumping-back rule: Calculator doesn't get touched again
+without a critical bug, a conversion problem, an SEO problem, or a
+responsiveness problem.
+
+**Current Sprint:** Cases
+**Current Block:** Cases
+**Next Block:** Reviews
+**Current Goal:** Open Cases per the content-gating rule below — start
+with UX/business logic, no code, per the same process used for every
+prior block
 
 ## Definition of Done
 
@@ -133,6 +151,11 @@ nothing leads to nowhere.
 ➖ = not applicable (infrastructure, not a story beat / has no external
 dependency to break).
 
+🔒 = intentionally blocked, not merely unstarted — the code/design side
+is genuinely done, but Release waits on something outside engineering
+(e.g. real content that doesn't exist yet). Distinct from ⬜, which
+just means "not reached yet."
+
 | Section | Built | QA | Narrative | Release |
 |---|---|---|---|---|
 | Header | ✅ | ✅ live-verified (curl + screenshots): overflow fix, mobile menu, aria-expanded — real Desktop/Mobile screenshots exist for this one | ➖ | ➖ |
@@ -140,7 +163,7 @@ dependency to break).
 | Services | ✅ | ✅ *(no independent screenshot — confirmed via shared grid/spacing patterns already verified in the consistency audit, and present in DOM with correct `id`/`aria-labelledby`; not directly seen rendering on screen)* | ✅ | ✅ same `#contact`/`#calculator` fix, confirmed live |
 | Advantages | ✅ | ✅ *(same caveat as Services — DOM-confirmed, patterns-confirmed, not independently screenshotted)* | ✅ | ✅ no CTA of its own — nothing to break |
 | Process | ✅ *(4-step stepper, "Ваша роль/Наша робота" split, CTA bridges to Calculator)* | ✅ live screenshots at 1920/1440/1366/1024/768/420px — desktop connecting line, 2×2 tablet (line correctly hidden), mobile vertical rail all confirmed rendering correctly, incl. the `top`/`bottom` fix actually spanning to the next circle | ✅ step 4 echoes Hero's promise, CTA reads clearly in every screenshot | ✅ CTA points at `#calculator`, which already exists and works |
-| Calculator (auto) | ⬜ *(JS calculator already functional — needs brand/QA pass)* | ⬜ | ⬜ | ⬜ |
+| Calculator (auto) | ✅ *(rebuilt on `feature/calculator-refactor`: 9 fields incl. condition, registration date, truck/bus excise as weight×age matrix, live NBU rates, multi-currency display, separate pension line — dead PHP engine deleted from Git **and** Local Sites)* | ✅ Technical QA (DOM/IDs/no warnings) + extensive live Visual QA — real screenshots across breakpoints, real reference-tool cross-checks (mdoffice.com.ua) confirming duty/excise/VAT to the cent, multiple confirmed bugs found and fixed — see "Calculator — Visual QA findings" | ✅ delivers on Hero's payments-upfront promise, bridges cleanly into `#contact` | ✅ CTA target confirmed working (`#contact`); Hero + Process CTAs reworded from generic "Розрахувати митні платежі" to be honest about vehicle-only scope |
 | Cases | ⬜ | ⬜ | ⬜ | ⬜ |
 | Reviews | ⬜ | ⬜ | ⬜ | ⬜ |
 | FAQ | ⬜ | ⬜ | ⬜ | ⬜ |
@@ -232,6 +255,231 @@ Per the No-jumping-back rule, none of these three get touched again
 without a critical bug, a conversion problem, an SEO problem, or a
 responsiveness problem.
 
+### Calculator Refactor
+
+Followed the full sequence: business goal → UX → conversion review →
+technical audit → refactor plan → Definition of Done → code — before
+opening a single file. The audit reframed the calculator itself: not a
+customs-duty calculator, a lead-conversion tool that happens to do math.
+
+**Git safety net.** Nothing in this repo had been committed since the
+theme scaffold — 96 files of Phase 1 work were sitting uncommitted.
+A git tag alone wouldn't have protected `inc/customs/` (it was never
+tracked, so a tag on old history wouldn't include it). Committed
+everything as `69c93f4`, tagged it `calculator-pre-refactor`, then did
+the whole refactor on an isolated `feature/calculator-refactor` branch.
+
+**Built as 5 atomic steps** (whole-file rewrites, not interleaved
+edits, to avoid a half-working intermediate state):
+
+1. `calculator-auto.php` — structure only, rebuilt around 6 fields
+   (down from 9): vehicle type, price+currency, year, fuel, engine,
+   and a conditional 7th (`truck_weight`, trucks only — a physical
+   property of the vehicle, not an administrative detail, so it stayed
+   despite the general "minimize fields" push)
+2. `assets/css/calculator.css` — full rebuild in the established design
+   system (navy/orange, `--calculator-*` local vars, same radius/shadow
+   language as Hero/Services/Advantages/Process). Caught and fixed a
+   contrast bug in my own new code before shipping:
+   `.calculator__result-rate` at `rgba(255,255,255,.5)` on the navy
+   panel measured 4.08:1, failing AA — bumped to `.65` (5.7:1+)
+3. `assets/js/calculator-auto.js` — full rewrite behind one
+   `CALC_CONFIG` object (rates, thresholds, coefficients) per the
+   "no magic numbers" rule; PDF/share-link/order-this-car buttons and
+   their handlers removed entirely — `btnOrderThisCar` was already
+   silently broken (referenced `#contact-message`/`#contact-name`
+   fields that stopped existing when the CTA form got replaced with
+   channel links earlier); added `scrollIntoView({block:"nearest"})`
+   so calculating on mobile doesn't leave the result off-screen
+4. `functions.php` — removed the `inc/customs.php` require
+5. Deleted `inc/customs.php` + `inc/customs/` (10 files) — confirmed
+   zero callers, zero ajax/REST hooks, zero save/log/mail before
+   deleting, not after
+
+**Business-logic decisions locked in during UX phase** (not
+rediscovered mid-code): pension fund is now always included in the
+estimate (no longer an input field — 90%+ of calculator users are
+first-time registrations, so defaulting to "yes" keeps the estimate
+close to reality) with a plain-language disclaimer instead of the
+"Пенсійний фонд" line item; origin/importer-type fields removed
+entirely in favor of a static "standard rate, we'll check for
+preferential treatment during consultation" note (most users don't
+know their car's country of manufacture); NBU rate disclaimer
+deliberately has **no date** — the rates are still hardcoded constants,
+not a live feed, so claiming a specific "as of" date would promise a
+freshness the code doesn't have.
+
+**Not done in this pass:** `app/`'s empty PSR-4 skeleton (separate
+Backlog item, not touched by this refactor).
+
+### Calculator — post-refactor fixes
+
+Found during live QA feedback, after the 5-step refactor above shipped.
+
+**Truck/bus excise was legally wrong.** The refactor ported the
+pre-refactor weight-only rates as-is. Real law (Tax Code Art. 215 +
+Law № 3553-IX) needs weight **and** age **and** new-vs-used
+(registration history, not manufacture year) together, not weight alone.
+Rebuilt from verbatim legal text the user supplied, not guessed:
+- **Truck (8704):** new = flat rate by weight (0.01 / 0.013 / 0.016
+  €/cm³ by weight tier); used = weight-tier base rate (0.02 / 0.026 /
+  0.033) × age coefficient (×1 ≤5y, ×40 5–8y, ×50 >8y)
+- **Bus (8702):** new = 0.003 €/cm³ flat; used = 0.007 €/cm³, ×50 if
+  >8 years old (no weight tiers for buses — confirmed from law text,
+  unlike trucks)
+- Added a `condition` field (Вживане / Нове, defaults to Вживане) since
+  "new" is a registration-history fact the user knows, not something
+  derivable from the year field
+- `CALC_CONFIG.EXCISE.truck` / `.bus` and `calculateTruckExcise()` /
+  `calculateBusExcise()` rewritten accordingly in `calculator-auto.js`
+
+**CTA misdirection (Hero + Process).** Both blocks talk about goods
+*and* vehicles, but their "Розрахувати митні платежі" CTA sent every
+visitor into the vehicle-only calculator (first field: "Тип
+транспортного засобу", no goods option). A goods-import visitor
+clicking it landed on a form that didn't apply to them. Reworded both
+to "Розрахувати вартість авто" (Hero) — Process's CTA was separately
+changed to "Отримати консультацію" → `#contact` per a later decision.
+Touching Hero/Process again is justified under the No-jumping-back
+rule's "conversion problem" exception, not a scope violation.
+
+**Process hover animation.** `.process__step-num` never had a `:hover`
+state — not a regression, just never built. Added an expanding-ring
+ripple (two rings, offset timing, `prefers-reduced-motion` respected).
+
+**Dead code survived in Local Sites after being deleted in Git.**
+`inc/customs.php`, `inc/customs/` (10 files), and the old
+`template-parts/calculator.php` were deleted in Git during the refactor
+but the deletion was never synced to the actual served theme directory
+— found via a full recursive diff between the two trees. Removed there
+too. `functions.php` never required them post-refactor, so they were
+inert, not a live bug, but a real gap between "we said it's deleted"
+and what was actually on disk.
+
+**Asset cache-busting bug (critical, sitewide, not Calculator-specific).**
+Every enqueued CSS/JS file shared one static version string
+(`CUSBRO_VERSION`, from the theme header) — meaning every single edit
+made this entire session could have been served stale from browser
+cache under the same `?ver=1.0.0` URL. Added `cusbro_asset_version()`
+in `inc/helpers.php` (per-file `filemtime()`, falls back to
+`CUSBRO_VERSION` if the file is missing) and switched every
+`wp_enqueue_style`/`wp_enqueue_script` call in `inc/enqueue.php` to use
+it. Verified live: each asset now gets its own distinct version number.
+Production note (not urgent): `filemtime()` on every request is fine
+for a single dev site, but before launch consider a build-time hash or
+bumping `CUSBRO_VERSION` per release instead, to avoid a filesystem
+stat on every asset on every request.
+
+### Calculator — Visual QA findings (closing the block)
+
+Found and fixed during the actual live QA pass (screenshots + real
+reference-tool cross-checks against mdoffice.com.ua's professional
+customs calculator), distinct from the pre-QA legal-data corrections
+in the section above.
+
+**Cross-validated against an independent reference tool.** Several
+truck/bus/car test cases (diesel truck 5-20t, electric car, large
+diesel bus) were run through both our calculator and MD Office's and
+compared line-by-line — duty, excise, and VAT matched to the cent
+once currency rates were aligned. This is real external validation,
+not just internal consistency.
+
+**Bus duty: 20% for large diesel, not a blanket 10%.** Found via a
+reference-tool mismatch — traced to УКТ ЗЕД 8702 10/8702 20 (diesel
+and diesel-hybrid buses over 5000cm³) carrying 20%, confirmed against
+the official Митний тариф. Smaller diesel buses, all petrol/hybrid-
+petrol, and electric stay at 10%.
+
+**Electric duty exemption is car-specific, not universal.** 0% duty
+only applies to passenger cars (8703 80). Electric trucks (8704 60),
+buses (8702 40 00 90), and motorcycles (8711 60) all pay the standard
+10% — the code previously gave every electric vehicle 0% regardless
+of type.
+
+**Hybrid fuel split into `hybrid_petrol`/`hybrid_diesel`.** The law has
+no separate hybrid excise rate — a hybrid is taxed by its combustion
+engine's ignition type. The form previously offered one ambiguous
+"Гібрид" option requiring a silent default guess; now the visitor
+picks explicitly, removing the guess entirely (affects both car
+excise and the bus 20%-duty threshold, which is diesel-specific).
+
+**"Стан" (new/used) confirmed unnecessary for cars and motorcycles.**
+Car excise (Law № 2611-VIII) already handles this via its continuous
+age coefficient (a brand-new car naturally gets the minimum
+coefficient) — no separate flat "new" rate exists in the law. Duty
+tables confirm motorcycles don't even distinguish new/used. Only
+truck/bus have a genuine flat-vs-age-tiered split.
+
+**Truck/bus age now dated, not year-only, with an exact-boundary fix.**
+Added a real `type="date"` "Дата першої реєстрації" field (shown only
+for truck/bus + "used") — age is computed as full elapsed years from
+that exact date to today (month/day-aware, verified against a real
+boundary case where a 2-day difference in registration date changed
+the coefficient from ×40 to ×50). Also corrected the tier boundary
+itself: "до 5 років" is exclusive of exactly 5 years — a vehicle at
+precisely 5 full years already falls in the "від 5 до 8" (×40)
+bracket, not the base rate.
+
+**Live NBU exchange rates**, replacing the static hardcoded constants
+— see `inc/helpers.php::cusbro_get_nbu_rates()`. Requesting a pinned
+date (not the bare endpoint) was itself a fix: the undated NBU
+endpoint sometimes returns a rate already published in advance for
+the next business day, which produced a small but real mismatch
+against every other source quoting "today's" rate.
+
+**Multi-currency result display.** The result now leads with whichever
+currency the visitor priced the car in, with UAH and the other major
+currency shown as smaller reference lines below — not a fixed "always
+EUR" display regardless of what was actually entered.
+
+**Pension fund shown as its own line, not folded into the grand
+total** — confirmed as the correct convention by comparing against
+MD Office, which does the same via its own "Додаткові витрати"
+section.
+
+**Motorcycle fuel options restricted to petrol/electric.** Diesel and
+hybrid variants don't physically exist for motorcycles — removed from
+the dropdown for that vehicle type instead of silently accepting an
+impossible combination.
+
+**Dead VAT exemption clause removed.** `ELECTRIC_EXEMPT_UNTIL_YEAR`
+governed a VAT exemption that expired 01.01.2026 — since the
+calculator only ever evaluates "today," the clause could never fire
+again. Removed rather than left as inert code.
+
+**Two unrelated mobile bugs found and fixed along the way** (outside
+Calculator, but surfaced during this QA pass under the
+"responsiveness problem" exception to No-jumping-back): Services
+trust-strip CTA text overflowing its button at ≤768px (`white-space:
+nowrap` fighting a `width:100%` override), and Hero's H1 sitting too
+close to the viewport edge at ≤480px (container gutter shrinking
+below a usable minimum).
+
+### Cases — content-gating rule (agreed before build starts)
+
+Decided ahead of time, specifically so this doesn't turn into a
+mid-build argument or a reason to reopen the block later:
+
+**Phase 1 (build).** Full design, layout, responsiveness, animations,
+structure, SEO markup, all block logic — built and finished exactly
+like every other block, using clearly-fictional demo cases. Target
+status on completion:
+
+- Built ✅
+- Technical QA ✅
+- Visual QA ✅
+- Narrative ✅
+- Release 🔒 *(blocked: waiting on real client cases)*
+
+**Phase 2 (after real cases arrive).** Swap **only** content: car
+photos, real amounts, real timelines, countries, the short story text.
+No HTML/CSS/JS touched — if a content swap needs a markup change, the
+Phase 1 structure was wrong and that's a bug, not a normal Phase 2
+step. Once swapped, Release flips from 🔒 to ✅.
+
+This keeps the One Change Rule intact: Phase 1 builds the system,
+Phase 2 is a content-only swap, never both at once.
+
 ## Versions
 
 - v0.1 — Header ✅
@@ -239,7 +487,7 @@ responsiveness problem.
 - v0.3 — Services ✅
 - v0.4 — Advantages ✅
 - v0.5 — Process ✅
-- v0.6 — Calculator
+- v0.6 — Calculator ✅
 - v0.7 — Cases
 - v0.8 — Reviews
 - v0.9 — FAQ
@@ -293,11 +541,15 @@ homepage subsection
 
 ### UI
 
-- `app/` — an empty PSR-4 class skeleton sitting parallel to the working
-  `inc/customs/` engine. Two competing designs for the same domain;
-  needs a decision before it multiplies.
-- `assets/icons/` — empty directory, no longer referenced (icons are
-  inline SVG now). Safe to delete.
+- `app/` — an empty PSR-4 class skeleton for the same customs-calculation
+  domain that `inc/customs/` used to cover. Now that `inc/customs/` is
+  deleted (see Calculator Refactor below), `app/` is the only leftover
+  skeleton — still needs a decision (delete, or is it meant for
+  something else) before it accidentally becomes a second source of truth.
+- `assets/icons/` — no longer empty (phone/telegram/viber/whatsapp SVGs
+  now present), but nothing in the theme references files from this
+  folder — icons are inline SVG in the markup everywhere. Confirm
+  whether these files are meant to be used somewhere, or removed.
 - Footer still on the old blue palette / old CSS from before the rebrand.
 - **Real WCAG contrast failure, confirmed by grep + hand calculation:**
   `.post-card__date` in `assets/css/recent-posts.css:47` uses
@@ -343,11 +595,8 @@ homepage subsection
 
 ### Performance
 
-- `inc/customs/*.php` — a full PHP calculation engine that nothing calls;
-  the live calculator is 100% client-side JS in
-  `assets/js/calculator-auto.js`, and the two have already drifted
-  (different duty/excise rates). Decide: wire it up server-side, or
-  remove it — dead PHP still gets parsed on every request.
+- ~~`inc/customs/*.php` dead PHP engine~~ — resolved, see Calculator
+  Refactor below.
 
 ### Content
 
