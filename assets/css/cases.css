@@ -1,0 +1,185 @@
+/* ============================================================
+   Cases — CUSBRO
+   ============================================================ */
+.cases {
+    --cases-primary: #0D3B66;
+    --cases-accent: #F58220;
+    --cases-accent-dark: #DD6F10;
+    --cases-light: #F7F8FA;
+    --cases-border: #E6EAF0;
+    --cases-text: #1A1A1A;
+    --cases-muted: #5B6472;
+    --cases-radius: 14px;
+    --cases-radius-lg: 22px;
+
+    background: var(--cases-light);
+    padding-block: 120px;
+}
+
+.cases .container {
+    width: min(1320px, 92%);
+    margin-inline: auto;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.cases .section-heading {
+    max-width: 620px;
+    margin-bottom: 56px;
+}
+
+.cases .section-heading h2 {
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    color: var(--cases-text);
+    margin-bottom: 12px;
+}
+
+.cases .section-heading p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--cases-muted);
+}
+
+/* ── Grid ──────────────────────────────────────────────── */
+.cases__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-bottom: 56px;
+}
+
+/* ── Card ──────────────────────────────────────────────── */
+.case-card {
+    display: flex;
+    flex-direction: column;
+    background: #FFFFFF;
+    border: 1px solid var(--cases-border);
+    border-radius: var(--cases-radius-lg);
+    padding: 28px;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.case-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(13, 59, 102, .12);
+    border-color: transparent;
+}
+
+.case-card__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--cases-primary);
+    background: var(--cases-light);
+    border: 1px solid var(--cases-border);
+    border-radius: 100px;
+    padding: 6px 12px 6px 10px;
+    margin-bottom: 18px;
+}
+
+/* icon carries the accent — the badge itself stays neutral (navy text,
+   light fill) so all six read as one system, not six competing colors */
+.case-card__badge svg {
+    flex-shrink: 0;
+    color: var(--cases-accent);
+}
+
+.case-card__title {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -.01em;
+    color: var(--cases-text);
+    margin-bottom: 16px;
+}
+
+.case-card__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--cases-border);
+}
+
+.case-card__list li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--cases-muted);
+}
+
+.case-card__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--cases-accent);
+}
+
+.case-card__price {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -.01em;
+    line-height: 1.1;
+    color: var(--cases-primary);
+    margin-bottom: 8px;
+}
+
+.case-card__result {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--cases-muted);
+}
+
+/* ── CTA ───────────────────────────────────────────────── */
+.cases__cta {
+    text-align: center;
+}
+
+.cases__cta p {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--cases-text);
+    margin-bottom: 20px;
+}
+
+/* .btn alone (main.css) is unstyled structure only — .btn--primary would
+   pull in the old pre-rebrand blue (--primary: #0C5ADB), not this
+   section's navy/orange, so the visual treatment is scoped here instead */
+.cases__cta .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 56px;
+    padding: 0 32px;
+    border-radius: var(--cases-radius);
+    background: var(--cases-accent);
+    color: var(--cases-primary);
+    font-size: 16px;
+    font-weight: 700;
+    box-shadow: 0 10px 24px rgba(245, 130, 32, .28);
+    transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.cases__cta .btn:hover {
+    background: var(--cases-accent-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(245, 130, 32, .34);
+}
+
+.cases__cta .btn:focus-visible {
+    outline: 3px solid rgba(245, 130, 32, .4);
+    outline-offset: 2px;
+}

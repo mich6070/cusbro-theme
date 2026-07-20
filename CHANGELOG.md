@@ -15,6 +15,28 @@ tag name) under its heading, e.g. `v0.7` / `2026-07-25` or `v0.7` /
 own tag, so it's always obvious at a glance which entry below is
 actually live vs. still in progress.
 
+## v0.7 — Cases 🔒
+
+Built, technically QA'd, and visually QA'd (Desktop/Laptop/Tablet/
+Mobile) — Release intentionally held open, see PROJECT_ROADMAP.md's
+content-gating rule. Not tagged: this version isn't shippable yet.
+
+- 6 demo cases (3 passenger cars + truck + bus + motorcycle) as
+  placeholder content — badge + SVG icon per category (icons reused
+  from Services, no new colors added — stays within the navy/orange
+  Architecture Rules)
+- CTA scoped locally (`.cases__cta .btn`) rather than reusing the
+  sitewide `.btn--primary`, which still carries the old pre-rebrand
+  blue (`#0C5ADB`) instead of this section's navy/orange
+- Found and fixed a real sitewide bug during QA: `.about-grid`'s grid
+  items had no `min-width: 0` (the classic grid/flex "won't shrink
+  below content" trap) and `overflow-x: hidden` was missing on `html`
+  (only on `body`) — together these caused horizontal overflow on
+  mobile that made unrelated sections look broken in the same
+  screenshots
+- Content is explicitly fictional pending real client cases (Phase 2:
+  content-only swap, no HTML/CSS/JS changes)
+
 ## v0.6 — Calculator ✅
 
 Tag: `calculator-v1.0`

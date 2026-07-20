@@ -24,6 +24,7 @@ function cusbro_enqueue_assets()
         'auto',
         'process',
         'calculator',
+        'cases',
         'reviews',
         'stats',
         'recent-posts',

@@ -11,6 +11,7 @@
     .process__steps { grid-template-columns: repeat(2, 1fr); gap: 40px 24px; }
     .process__step::after { display: none; }
     .calculator__grid { grid-template-columns: 1fr 380px; gap: 24px; }
+    .cases__grid { grid-template-columns: repeat(2, 1fr); }
     .faq__inner { grid-template-columns: 1fr; gap: 40px; }
     .cta__inner { grid-template-columns: 1fr; gap: 48px; }
     .cta__form { max-width: 520px; }
@@ -126,6 +127,9 @@
     .calculator__result { position: static; padding: 24px; }
     .calculator__result-amount { font-size: 38px; }
     .calculator__explainer { padding: 8px 24px; }
+
+    .cases { padding-block: 64px; }
+    .cases__grid { grid-template-columns: 1fr; gap: 20px; }
 }
 @media (max-width: 480px) {
     /* the 92% container width leaves only ~17px of gutter at 420px, and

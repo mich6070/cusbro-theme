@@ -124,6 +124,17 @@ gap:50px;
 
 }
 
+/* grid items default to min-width:auto — they refuse to shrink below
+their own content's intrinsic width even after the column collapses
+to 1fr above, which is exactly what was forcing horizontal overflow
+at narrow widths */
+.about-image,
+.about-content{
+
+min-width:0;
+
+}
+
 .about-image{
 
 order:-1;
