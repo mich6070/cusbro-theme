@@ -10,7 +10,14 @@ authoritative. Once a version is actually tagged, add the date (or the
 tag name) under its heading, e.g. `v0.7` / `2026-07-25` or `v0.7` /
 `Tag: v0.7`.
 
+**Current stable release:** `calculator-v1.0` *(tagged, merged to
+`main`, pushed)* — update this line each time a new version gets its
+own tag, so it's always obvious at a glance which entry below is
+actually live vs. still in progress.
+
 ## v0.6 — Calculator ✅
+
+Tag: `calculator-v1.0`
 
 - Rebuilt the customs calculator on `feature/calculator-refactor`:
   reframed from "customs-duty calculator" to lead-conversion tool,

@@ -5,16 +5,21 @@ runs — this is the single source of truth for build status. Replaces
 the old `docs/12_TODO.md`, which tracked features rather than sections
 and had gone stale (marked Footer/Header done before they were).
 
-## Project Status
+## Current Project Status
 
-**Phase 1 — Header + Hero + Services + Advantages: CLOSED** ✅
+**Phase 1 — Core Landing Page** *(in progress — see block-by-block
+status below; Calculator is part of this phase, not a separate track)*
 
-- Header — ✅ Built ✅ QA ✅ Narrative ➖ Release ➖
+Closed so far: Header, Hero, Services, Advantages, Process, Calculator.
+
+- Header — ✅ Built ✅ QA ➖ Narrative ➖ Release
 - Hero — ✅ Built ✅ QA ✅ Narrative ✅ Release
 - Services — ✅ Built ✅ QA ✅ Narrative ✅ Release
 - Advantages — ✅ Built ✅ QA ✅ Narrative ✅ Release
-- CTA — 🔄 Built *(emergency-patched, no brand pass — still its own
-  future phase item)* 🔄 QA ✅ Release
+- CTA — 🔄 Built 🔄 QA ➖ Narrative ✅ Release *(temporary functional
+  patch — channel links only, no server-side form handler; full brand
+  redesign scheduled for its own turn in Phase 1, see Homepage
+  sections table)*
 
 Closed on a real QA pass: screenshots at 480/768/1024/1440/1920px,
 Lighthouse (desktop + mobile), `<main>`/meta-description confirmed live.
