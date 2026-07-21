@@ -12,6 +12,7 @@
     .process__step::after { display: none; }
     .calculator__grid { grid-template-columns: 1fr 380px; gap: 24px; }
     .cases__grid { grid-template-columns: repeat(2, 1fr); }
+    .reviews__grid { grid-template-columns: repeat(2, 1fr); }
     .faq__inner { grid-template-columns: 1fr; gap: 40px; }
     .cta__inner { grid-template-columns: 1fr; gap: 48px; }
     .cta__form { max-width: 520px; }
@@ -130,6 +131,14 @@
 
     .cases { padding-block: 64px; }
     .cases__grid { grid-template-columns: 1fr; gap: 20px; }
+
+    .reviews { padding-block: 64px; }
+    .reviews__grid { grid-template-columns: 1fr; gap: 20px; }
+    .reviews__cta { flex-direction: column; }
+
+    .faq { padding-block: 64px; }
+    .faq__question { padding: 16px 18px; font-size: 15px; }
+    .faq__answer { padding: 0 18px 16px; }
 }
 @media (max-width: 480px) {
     /* the 92% container width leaves only ~17px of gutter at 420px, and
