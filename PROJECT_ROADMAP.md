@@ -7,34 +7,32 @@ and had gone stale (marked Footer/Header done before they were).
 
 ## Current Project Status
 
-**Phase 1 — Core Landing Page** *(in progress — see block-by-block
-status below; Calculator is part of this phase, not a separate track)*
+**Phase 1 — Core Landing Page: COMPLETE ✅**
 
-Closed so far: Header, Hero, Services, Advantages, Process, Calculator.
+Every homepage block is Built + Technical QA + Visual QA + Narrative
+✅. Full detail (what was checked, what was found, what's still
+explicitly open) lives in the Homepage sections table below and each
+block's own subsection — this is just the roll-call:
 
-- Header — ✅ Built ✅ QA ➖ Narrative ➖ Release
-- Hero — ✅ Built ✅ QA ✅ Narrative ✅ Release
-- Services — ✅ Built ✅ QA ✅ Narrative ✅ Release
-- Advantages — ✅ Built ✅ QA ✅ Narrative ✅ Release
-- CTA — 🔄 Built 🔄 QA ➖ Narrative ✅ Release *(temporary functional
-  patch — channel links only, no server-side form handler; full brand
-  redesign scheduled for its own turn in Phase 1, see Homepage
-  sections table)*
+- Header, Hero, Services, Advantages ✅ *(closed on a real QA pass:
+  screenshots at 480/768/1024/1440/1920px, Lighthouse desktop+mobile)*
+- Process ✅
+- Calculator v1.0 ✅ *(tagged, merged to `main`)*
+- Cases ✅ *(Release 🔒 — demo content, real client cases pending)*
+- Reviews ✅ *(Release 🔒 — Google Places API credentials pending)*
+- FAQ ✅
+- CTA ✅ *(accepted as-is for Phase 1 — functional channel links, real
+  phone; still on the old pre-rebrand blue, brand pass explicitly
+  deferred to a later phase, not forgotten)*
 
-Closed on a real QA pass: screenshots at 480/768/1024/1440/1920px,
-Lighthouse (desktop + mobile), `<main>`/meta-description confirmed live.
-Two logged exceptions, not swept under the rug — see Definition of Done
-(Best Practices/HTTPS) and Backlog → UI (the real contrast bug found in
-the *Blog* section, and an unidentified console error, neither of which
-is Hero/Services/Advantages code).
+Per the No-jumping-back rule: none of the above get touched again
+without a critical bug, a conversion problem, an SEO problem, or a
+responsiveness problem.
 
-Per the No-jumping-back rule: Header, Hero, Services, Advantages don't
-get touched again without a critical bug, a conversion problem, an SEO
-problem, or a responsiveness problem.
-
-**Process: Built ✅ QA ✅ Narrative ✅ Release ✅ — CLOSED**
-
-**Calculator: Built ✅ QA ✅ Narrative ✅ Release ✅ — CLOSED**
+Two pre-existing logged exceptions, not swept under the rug — see
+Definition of Done (Best Practices/HTTPS) and Backlog → UI (a contrast
+bug in the *Blog* section, and an unidentified console error, neither
+of which is homepage-block code).
 
 Technical QA passed live (DOM/IDs, no PHP warnings, no duplicate IDs,
 dead pre-refactor engine purged, cache-busting fixed). Visual QA ran as
@@ -69,12 +67,14 @@ Per the No-jumping-back rule: Cases doesn't get touched again without
 a critical bug, a conversion problem, an SEO problem, or a
 responsiveness problem.
 
-**Current Sprint:** Reviews
-**Current Block:** Reviews
-**Next Block:** FAQ
-**Current Goal:** Open Reviews — same process as every prior block:
-UX/business logic first, no code, then text, wireframe, HTML, CSS,
-QA, Narrative, Release.
+**Current Sprint:** Phase 2 — SEO
+**Current Block:** SEO landing page architecture (URL structure, first
+pages for vehicle/goods clearance)
+**Next Block:** Google Reviews API integration
+**Current Goal:** Phase 1 is done and tagged (`phase1-v1.0`). Phase 2
+priority order: SEO landing pages → Google Reviews API → real Cases
+content → blog/content marketing. No more base-block rework expected —
+this is additive work on a stable foundation.
 
 ## Definition of Done
 
@@ -188,9 +188,9 @@ just means "not reached yet."
 | Process | ✅ *(4-step stepper, "Ваша роль/Наша робота" split, CTA bridges to Calculator)* | ✅ live screenshots at 1920/1440/1366/1024/768/420px — desktop connecting line, 2×2 tablet (line correctly hidden), mobile vertical rail all confirmed rendering correctly, incl. the `top`/`bottom` fix actually spanning to the next circle | ✅ step 4 echoes Hero's promise, CTA reads clearly in every screenshot | ✅ CTA points at `#calculator`, which already exists and works |
 | Calculator (auto) | ✅ *(rebuilt on `feature/calculator-refactor`: 9 fields incl. condition, registration date, truck/bus excise as weight×age matrix, live NBU rates, multi-currency display, separate pension line — dead PHP engine deleted from Git **and** Local Sites)* | ✅ Technical QA (DOM/IDs/no warnings) + extensive live Visual QA — real screenshots across breakpoints, real reference-tool cross-checks (mdoffice.com.ua) confirming duty/excise/VAT to the cent, multiple confirmed bugs found and fixed — see "Calculator — Visual QA findings" | ✅ delivers on Hero's payments-upfront promise, bridges cleanly into `#contact` | ✅ CTA target confirmed working (`#contact`); Hero + Process CTAs reworded from generic "Розрахувати митні платежі" to be honest about vehicle-only scope |
 | Cases | ✅ *(HTML+CSS, Phase 1 content-gating: 6 demo cases — 3 legkovi/truck/bus/moto — badge+icon system reusing Services SVGs, no new colors per Architecture Rules)* | ✅ Technical QA + real Visual QA (Desktop/Laptop/Tablet/Mobile, equal card heights, hover, SVG alignment, no horizontal scroll — including a real cross-section bug found and fixed: `.about-grid` grid items missing `min-width:0`, `overflow-x:hidden` missing on `html`) | ✅ Calculator → Cases → CTA reads as one continuous story | 🔒 intentionally blocked — demo cases only, waiting on real client data per the content-gating rule |
-| Reviews | ⬜ | ⬜ | ⬜ | ⬜ |
-| FAQ | ⬜ | ⬜ | ⬜ | ⬜ |
-| CTA | ⬜ *(emergency-patched only — see below; still old visual style, no brand pass yet)* | ⬜ | ⬜ *(not evaluated — this isn't its real build turn yet)* | ✅ real phone + working Telegram/Viber/WhatsApp, no dead form |
+| Reviews | ✅ *(provider-pattern architecture: `cusbro_get_reviews()` is data-source-agnostic — `inc/reviews/provider-demo.php`/`provider-google.php`/`cache.php`/`schema.php`/`helpers.php`; demo content live now, Google Places swap needs zero HTML/CSS/JS changes)* | ✅ Technical + real Visual QA (Desktop/Laptop/Tablet/Mobile) confirmed clean | ✅ | 🔒 blocked on: (1) real Google Places API key + Place ID in `wp-config.php`, (2) confirm the "Переглянути всі відгуки" URL actually resolves correctly (derived by dropping `/review` from the given short link, not independently confirmed), (3) site title in WP Admin → General is real ("cusbro" lowercase currently feeds the JSON-LD `name` field) |
+| FAQ | ✅ *(rebuilt from a stale legacy version — full audit found an inline `style=""`, old pre-rebrand blue color vars, and a completely non-functional accordion with zero JS wiring it up. Rebuilt: 9 questions in 3 groups — Загальне/Автомобілі/Товари — one shared accordion, new `main.js` toggle logic written from scratch)* | ✅ Technical + real Visual QA (Desktop/Laptop/Tablet/Mobile, keyboard, focus-visible) confirmed clean | ✅ reads as a natural close to Reviews, not a disconnected reference page | ✅ CTA target confirmed working (`#contact`) |
+| CTA | ✅ *(accepted as Phase 1's final state — functional channel links, real phone number, no dead form; still on the old pre-rebrand blue, a full navy/orange brand pass is explicitly deferred, not forgotten)* | ✅ | ✅ | ✅ real phone + working Telegram/Viber/WhatsApp, no dead form |
 | Footer | ⬜ *(old blue theme, not yet rebuilt)* | ⬜ | ➖ | ➖ |
 
 ### `#contact` fix — Release blocker for Hero + Services
@@ -512,14 +512,21 @@ Phase 2 is a content-only swap, never both at once.
 - v0.5 — Process ✅
 - v0.6 — Calculator ✅
 - v0.7 — Cases 🔒 *(built + QA'd, Release blocked on real case data)*
-- v0.8 — Reviews
-- v0.9 — FAQ
-- v0.95 — CTA + Footer
+- v0.8 — Reviews 🔒 *(built + QA'd, Release blocked on Google API credentials)*
+- v0.9 — FAQ ✅
+- v0.95 — Footer *(still pending — old blue theme, not yet rebuilt;
+  intentionally not part of `phase1-v1.0`, see tag note below)*
 - v1.0 — Release (Final Polish complete, homepage done)
+
+**Tag: `phase1-v1.0`** — Header through FAQ + CTA (10 blocks). Marks
+the point where the homepage's architecture, design system, and UX
+are considered stable; Footer and the two 🔒 content-gated blocks
+(Cases, Reviews) are the only pieces of the homepage still open.
 
 ## Phase roadmap
 
-**Phase 1 — Homepage** *(in progress, see table above)*
+**Phase 1 — Homepage: COMPLETE ✅** *(tagged `phase1-v1.0`, see table
+above)*
 
 **Phase 2 — SEO Landing Pages** — one URL per commercial query, not a
 homepage subsection
