@@ -10,10 +10,65 @@ authoritative. Once a version is actually tagged, add the date (or the
 tag name) under its heading, e.g. `v0.7` / `2026-07-25` or `v0.7` /
 `Tag: v0.7`.
 
-**Current stable release:** `calculator-v1.0` *(tagged, merged to
-`main`, pushed)* — update this line each time a new version gets its
-own tag, so it's always obvious at a glance which entry below is
-actually live vs. still in progress.
+**Current stable release:** `phase1-v1.0` *(tagged, merged to `main`,
+pushed)* — update this line each time a new version gets its own tag,
+so it's always obvious at a glance which entry below is actually live
+vs. still in progress.
+
+## phase1-v1.0 — Phase 1 (Core Landing Page) complete
+
+Every homepage block built, technically QA'd, visually QA'd
+(Desktop/Laptop/Tablet/Mobile), and Narrative-confirmed: Header, Hero,
+Services, Advantages, Process, Calculator, Cases, Reviews, FAQ, CTA.
+Cases and Reviews carry an intentional `🔒` — demo content and missing
+Google API credentials respectively, not technical debt. Footer is
+the one homepage piece still explicitly outside this tag (old
+pre-rebrand blue theme). This is the stabilization point before Phase
+2 (SEO landing pages, Google Reviews integration, real Cases content,
+blog) — no further rework of these blocks is expected without a
+critical bug, conversion, SEO, or responsiveness reason.
+
+## v0.9 — FAQ ✅
+
+- Rebuilt from a stale legacy version — audit found an inline
+  `style=""` (Architecture Rules violation), the old pre-rebrand blue
+  color variables instead of a local `--faq-*` set, and a completely
+  non-functional accordion: zero JavaScript anywhere wired up the
+  click behavior, `aria-expanded` never changed, answers never
+  revealed. Never worked, not a regression.
+- Restructured into 9 questions across 3 groups (Загальне/
+  Автомобілі/Товари) as one shared accordion, not three separate
+  components — single JS handler, single FAQPage schema regardless of
+  the visual grouping
+- New accordion JS written from scratch in `main.js`: native
+  `<button>` elements (free Tab/Enter/Space keyboard support, no
+  custom keydown handling needed), independent open/close per item
+- Fixed the same orange-text-on-light-background contrast failure
+  caught repeatedly elsewhere in this project (Hero/Services/
+  Advantages/Process) — moved the accent to a decorative dot,
+  group-title text stays navy
+- Content rewritten in plain client-facing language instead of
+  "customs" jargon, split cleanly by audience (vehicle owners vs.
+  goods importers) instead of one undifferentiated list
+
+## v0.8 — Reviews 🔒
+
+Built and technically QA'd; Release blocked on real Google API
+credentials, not a technical gap.
+
+- Provider-pattern architecture (`inc/reviews/`): `cusbro_get_reviews()`
+  is entirely data-source-agnostic — swapping the demo provider for
+  the Google Places provider needs zero HTML/CSS/JS changes
+- File-based cache (`cache/reviews.json`, gitignored) refreshed by a
+  `twicedaily` WP-Cron job — a page request never blocks on a live
+  Google API call, and a Google outage keeps serving the last good
+  cache instead of silently reverting to demo content
+- Schema.org `LocalBusiness` + `AggregateRating` + `Review[]`, kept
+  separate from the FAQ page's own `FAQPage` schema
+- Demo content deliberately has no invented names/cities/vehicle
+  types — those are exactly the fields the real Google data will
+  supply on its own; a generic "Клієнт CUSBRO" attribution avoids
+  writing fake identities into copy today
 
 ## v0.7 — Cases 🔒
 

@@ -19,6 +19,12 @@ $includes = [
     '/inc/cleanup.php',
     '/inc/helpers.php',
     '/inc/schema.php',
+    '/inc/reviews/provider-interface.php',
+    '/inc/reviews/cache.php',
+    '/inc/reviews/provider-demo.php',
+    '/inc/reviews/provider-google.php',
+    '/inc/reviews/schema.php',
+    '/inc/reviews/helpers.php',
 ];
 
 foreach ($includes as $file) {

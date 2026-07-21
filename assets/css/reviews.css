@@ -1,0 +1,144 @@
+/* ============================================================
+   Reviews — CUSBRO
+   ============================================================ */
+.reviews {
+    --reviews-primary: #0D3B66;
+    --reviews-accent: #F58220;
+    --reviews-light: #F7F8FA;
+    --reviews-border: #E6EAF0;
+    --reviews-text: #1A1A1A;
+    --reviews-muted: #5B6472;
+    --reviews-radius: 14px;
+    --reviews-radius-lg: 22px;
+
+    background: #FFFFFF;
+    padding-block: 120px;
+}
+
+.reviews .container {
+    width: min(1320px, 92%);
+    margin-inline: auto;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.reviews .section-heading {
+    max-width: 620px;
+    margin-bottom: 40px;
+}
+
+.reviews .section-heading h2 {
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    color: var(--reviews-text);
+    margin-bottom: 14px;
+}
+
+.reviews__rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: var(--reviews-muted);
+}
+
+.reviews__rating span[aria-hidden] {
+    font-size: 18px;
+    letter-spacing: 2px;
+}
+
+.reviews__rating strong {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--reviews-text);
+}
+
+/* ── Grid ──────────────────────────────────────────────── */
+.reviews__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-bottom: 48px;
+}
+
+/* ── Card ──────────────────────────────────────────────── */
+.review-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--reviews-light);
+    border: 1px solid var(--reviews-border);
+    border-radius: var(--reviews-radius-lg);
+    padding: 28px;
+}
+
+.review-card__stars {
+    font-size: 16px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+}
+
+.review-card__text {
+    flex-grow: 1;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--reviews-text);
+    margin-bottom: 20px;
+}
+
+.review-card__author {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--reviews-muted);
+}
+
+/* ── CTA row ───────────────────────────────────────────── */
+.reviews__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.reviews__cta-link {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--reviews-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color .2s ease;
+}
+
+.reviews__cta-link:hover {
+    color: var(--reviews-accent);
+}
+
+/* deliberately a quieter, outline treatment — this asks for a review,
+   it isn't the page's main conversion CTA and shouldn't compete
+   visually with it */
+.reviews__cta .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: var(--reviews-radius);
+    border: 2px solid var(--reviews-primary);
+    background: transparent;
+    color: var(--reviews-primary);
+    font-size: 14px;
+    font-weight: 700;
+    transition: background-color .2s ease, color .2s ease;
+}
+
+.reviews__cta .btn:hover {
+    background: var(--reviews-primary);
+    color: #FFFFFF;
+}
+
+.reviews__cta .btn:focus-visible,
+.reviews__cta-link:focus-visible {
+    outline: 3px solid rgba(13, 59, 102, .25);
+    outline-offset: 2px;
+}
